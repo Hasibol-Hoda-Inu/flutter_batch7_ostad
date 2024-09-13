@@ -10,31 +10,34 @@ class HomeScreen extends StatelessWidget {
     print('building');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Screen', style: TextStyle(
-          color: Colors.white
-        ),),
+        title: const Text(
+          'Home Screen',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
       ),
       body: Column(
         children: [
-          Consumer<FavoriteProvider>(builder: (context, value, child)=>Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index)=> ListTile(
-                  title: Text('Favorite ${index.toString()}'),
-                  trailing: Icon(
-                      value.selectedItem.contains(index) ? Icons.favorite : Icons.favorite_border),
-                  onTap: (){
-                    value.addIndex(index);
-                  },
-                  onLongPress: (){
-                    value.removeIndex(index);
-                  },
-                ),
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: 20,
-              )
-          )),
+          Consumer<FavoriteProvider>(
+              builder: (context, value, child) => Expanded(
+                      child: ListView.separated(
+                    itemBuilder: (context, index) => ListTile(
+                      title: Text('Favorite ${index.toString()}'),
+                      trailing: Icon(value.selectedItem.contains(index)
+                          ? Icons.favorite
+                          : Icons.favorite_border),
+                      onTap: () {
+                        if (value.selectedItem.contains(index)) {
+                          value.removeIndex(index);
+                        } else {
+                          value.addIndex(index);
+                        }
+                      },
+                    ),
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemCount: 20,
+                  ))),
         ],
       ),
     );
