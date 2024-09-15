@@ -14,8 +14,8 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-
-  List <Product> productList = [];
+  List<Product> productList = [];
+  bool _inProgress = false;
 
   @override
   void initState() {
@@ -29,20 +29,33 @@ class _ProductListScreenState extends State<ProductListScreen> {
       backgroundColor: Colors.white.withOpacity(0.9),
       appBar: AppBar(
         title: const Text('HomeScreen'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                getProductList();
+              },
+              icon: const Icon(Icons.refresh)),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ListView.separated(
-            itemCount: productList.length,
-            itemBuilder: (context, index) {
-              return  ProductListWidget(product: productList[index],);
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 8,
-              );
-            }),
-      ),
+      body: _inProgress
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListView.separated(
+                  itemCount: productList.length,
+                  itemBuilder: (context, index) {
+                    return ProductListWidget(
+                      product: productList[index],
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: 8,
+                    );
+                  }),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -55,12 +68,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   Future<void> getProductList() async {
+    _inProgress = true;
+    setState(() {});
+
     Uri uri = Uri.parse("http://164.68.107.70:6060/api/v1/ReadProduct");
     Response response = await get(uri);
     print(response.body);
     print(response.statusCode);
 
     if (response.statusCode == 200) {
+      productList.clear();
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       for (var item in jsonResponse["data"]) {
         Product product = Product(
@@ -75,7 +92,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         productList.add(product);
       }
     }
-
+    _inProgress = false;
     setState(() {});
   }
 }
