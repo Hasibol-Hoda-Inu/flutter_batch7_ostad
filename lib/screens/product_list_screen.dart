@@ -14,6 +14,7 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+
   List<Product> productList = [];
   bool _inProgress = false;
 
@@ -82,17 +83,38 @@ class _ProductListScreenState extends State<ProductListScreen> {
       for (var item in jsonResponse["data"]) {
         Product product = Product(
             id: item["_id"],
-            ProductName: item['ProductName'],
-            ProductCode: item['ProductCode'],
-            Img: item['Img'],
-            UnitPrice: item["UnitPrice"],
-            Qty: item['Qty'],
-            TotalPrice: item["TotalPrice"],
-            CreatedDate: item['CreatedDate']);
+            productName: item['ProductName'] ?? '',
+            productCode: item['ProductCode'] ?? '',
+            productImage: item['Img'] ?? '',
+            unitPrice: item["UnitPrice"] ?? '',
+            quantity: item['Qty'] ?? '',
+            totalPrice: item["TotalPrice"] ?? '',
+            createdAt: item['CreatedDate'] ?? '');
         productList.add(product);
       }
     }
     _inProgress = false;
     setState(() {});
   }
+
+  Future<void> deleteProduct(String id) async {
+    _inProgress = true;
+    setState(() {});
+
+    Uri uri = Uri.parse("http://164.68.107.70:6060/api/v1/DeleteProduct/$id");
+    Response response = await get(uri);
+
+    print(response.body);
+    print(response.statusCode);
+
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      getProductList();
+    }else{
+      _inProgress = false;
+      setState(() {});
+    }
+  }
 }
+

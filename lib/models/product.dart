@@ -1,21 +1,20 @@
 class Product {
-  final String _id;
-  final String ProductName;
-  final String ProductCode;
-  final String Img;
-  final String UnitPrice;
-  final String Qty;
-  final String TotalPrice;
-  final String CreatedDate;
+  final String id;
+  final String productName;
+  final String productCode;
+  final String productImage;
+  final String unitPrice;
+  final String quantity;
+  final String totalPrice;
+  final String createdAt;
 
   Product(
-      {required String id,
-      required this.ProductName,
-      required this.ProductCode,
-      required this.Img,
-      required this.UnitPrice,
-      required this.Qty,
-      required this.TotalPrice,
-      required this.CreatedDate})
-      : _id = id;
+      {required this.id,
+        required this.productName,
+        required this.productCode,
+        required this.productImage,
+        required this.unitPrice,
+        required this.quantity,
+        required this.totalPrice,
+        required this.createdAt});
 }
