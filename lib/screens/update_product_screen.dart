@@ -179,7 +179,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
     Uri uri = Uri.parse('http://164.68.107.70:6060/api/v1/UpdateProduct/${widget.product.id}');
     Map<String, dynamic> requestBody = {
-      "ProductName": _productCodeTEController.text.trim(),
+      "ProductName": _productNameTEController.text.trim(),
       "ProductCode": _productCodeTEController.text.trim(),
       "UnitPrice": _productPriceTEController.text.trim(),
       "Qty": _productQuantityTEController.text.trim(),
@@ -201,7 +201,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           content: Text('Product updated successfully'),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.symmetric(vertical: 16),
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         ),
       );
     }else {

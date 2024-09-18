@@ -16,6 +16,7 @@ class ProductListScreen extends StatefulWidget {
 class _ProductListScreenState extends State<ProductListScreen> {
 
   List<Product> productList = [];
+
   bool _inProgress = false;
 
   @override
@@ -49,6 +50,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   itemBuilder: (context, index) {
                     return ProductListWidget(
                       product: productList[index],
+                      onDelete: ()=> deleteProduct(productList[index].id),
                     );
                   },
                   separatorBuilder: (context, index) {
@@ -109,12 +111,28 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
     Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
-      getProductList();
-    }else{
-      _inProgress = false;
-      setState(() {});
-    }
+   try{
+     if (response.statusCode == 200) {
+       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+         content: Text('Product has been successfully deleted'),
+         backgroundColor: Colors.green,
+         behavior: SnackBarBehavior.floating,
+         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+       ));
+       getProductList();
+     }else{
+       _inProgress = false;
+       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+         content: Text('Error'),
+         backgroundColor: Colors.red,
+         behavior: SnackBarBehavior.floating,
+         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+       ));
+       setState(() {});
+     }
+   }catch (e){
+     print(e);
+   }
   }
 }
 

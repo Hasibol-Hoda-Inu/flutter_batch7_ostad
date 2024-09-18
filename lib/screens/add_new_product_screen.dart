@@ -149,7 +149,7 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
 
     Uri uri = Uri.parse('http://164.68.107.70:6060/api/v1/CreateProduct');
     Map<String, dynamic> requestBody = {
-      "ProductName": _productCodeTEController.text,
+      "ProductName": _productNameTEController.text,
       "ProductCode": _productCodeTEController.text,
       "UnitPrice": _productPriceTEController.text,
       "Qty": _productQuantityTEController.text,
@@ -168,10 +168,10 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
       _clearTextField();
       ScaffoldMessenger.of(context).showSnackBar(const
        SnackBar(
-        content: Text('New product adds'),
+        content: Text('New product added successfully'),
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.symmetric(vertical: 16),
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       );
     }
