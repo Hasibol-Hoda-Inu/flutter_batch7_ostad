@@ -11,7 +11,7 @@ class BMIcalculator extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const UserInputScreen(),
+      home: const HomeScreen(),
       theme: ThemeData(
         primarySwatch: customColor,
         inputDecorationTheme: const InputDecorationTheme(

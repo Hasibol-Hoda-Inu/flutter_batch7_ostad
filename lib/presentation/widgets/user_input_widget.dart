@@ -1,3 +1,4 @@
+import 'package:bmi_calculator/presentation/result_output_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../utility/app_color.dart';
@@ -110,7 +111,9 @@ class UserInputWidget extends StatelessWidget {
           width: double.infinity,
           height: 60,
           child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const ResultOutputScreen()));
+              },
               style: ElevatedButton.styleFrom(
                   backgroundColor: customColor,
                   shape: RoundedRectangleBorder(
