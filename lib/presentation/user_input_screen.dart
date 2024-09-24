@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'utility/app_color.dart';
 import 'widgets/user_input_widget.dart';
 
 class UserInputScreen extends StatelessWidget {
@@ -18,9 +17,9 @@ class UserInputScreen extends StatelessWidget {
           )
         ],
       ),
-      body: const SingleChildScrollView(child:
+      body: SingleChildScrollView(child:
       Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
         child: UserInputWidget(),
       ),),
     );
