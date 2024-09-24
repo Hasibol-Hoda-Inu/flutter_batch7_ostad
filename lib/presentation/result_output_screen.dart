@@ -90,7 +90,7 @@ class ResultOutputScreen extends StatelessWidget {
                         children: [
                           Column(
                             children: [
-                            Text(age.toString(), style: const TextStyle(
+                            Text("${age.toString()} yrs", style: const TextStyle(
                               color: Colors.white,
                               fontSize: 24,
                               fontWeight: FontWeight.w800
@@ -107,7 +107,7 @@ class ResultOutputScreen extends StatelessWidget {
                           ),
                           Column(
                             children: [
-                            Text(height.toString(), style:const TextStyle(
+                            Text("${height.toStringAsFixed(2)} m", style:const TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800
@@ -124,7 +124,7 @@ class ResultOutputScreen extends StatelessWidget {
                           ),
                           Column(
                             children: [
-                            Text(weight.toString(), style: const TextStyle(
+                            Text("${weight.toString()} kg", style: const TextStyle(
                           color: Colors.white,
                               fontSize: 24,
                               fontWeight: FontWeight.w800

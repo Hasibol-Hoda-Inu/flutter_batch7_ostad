@@ -13,7 +13,8 @@ class UserInputWidget extends StatelessWidget {
   TextEditingController yourNameTEcontroller = TextEditingController();
   TextEditingController yourAddressTEcontroller = TextEditingController();
   TextEditingController yourAgeTEcontroller = TextEditingController();
-  TextEditingController yourHeightTEcontroller = TextEditingController();
+  TextEditingController yourHeightInFeetTEcontroller = TextEditingController();
+  TextEditingController yourHeightInInchTEcontroller = TextEditingController();
   TextEditingController yourWeightTEcontroller = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -75,25 +76,25 @@ class UserInputWidget extends StatelessWidget {
           ),),
               const SizedBox(height: 12,),
               Row(
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () {
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
                     selectGender = "male";
                   },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xffe2eaff),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color(0xffe2eaff),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Image.asset("assets/images/Nafiz.png", alignment: Alignment.bottomCenter, ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Image.asset("assets/images/Nafiz.png", alignment: Alignment.bottomCenter, ),
                         ),
                       ),
                       const Text('Male', style: TextStyle(
@@ -130,19 +131,36 @@ class UserInputWidget extends StatelessWidget {
             ],
           ),
               const SizedBox(height: 24,),
-              const Text('Your Height (ft)', style: TextStyle(
-            fontSize: 18,
-          ),),
-              const SizedBox(height: 12,),
-              TextFormField(
-            controller: yourHeightTEcontroller,
-            keyboardType: TextInputType.number,
-            validator: (String? value){
-              if(value == null || value.isEmpty){
-                return "Enter a valid value";
-              }
-            },
-            decoration: const InputDecoration(),),
+                const Text('Your Height (ft)', style: TextStyle(
+                  fontSize: 18,
+                ),),
+                const SizedBox(height: 12,),
+              Row(children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: yourHeightInFeetTEcontroller,
+                    keyboardType: TextInputType.number,
+                    validator: (String? value){
+                      if(value == null || value.isEmpty){
+                        return "Enter a valid value";
+                      }
+                    },
+
+                    decoration: const InputDecoration(hintText: "Feet"),),
+                ),
+                const SizedBox(width: 16,),
+                Expanded(
+                  child: TextFormField(
+                    controller: yourHeightInInchTEcontroller,
+                    keyboardType: TextInputType.number,
+                    validator: (String? value){
+                      if(value == null || value.isEmpty){
+                        return "Enter a valid value";
+                      }
+                    },
+                    decoration: const InputDecoration(hintText: "Inch"),),
+                ),
+              ],),
               const SizedBox(height: 24,),
               const Text('Your Weight (kg)', style: TextStyle(
             fontSize: 18,
@@ -170,7 +188,7 @@ class UserInputWidget extends StatelessWidget {
                      ResultOutputScreen(
                        name: yourNameTEcontroller.text,
                        address: yourAddressTEcontroller.text,
-                       height: double.tryParse(yourHeightTEcontroller.text) ?? 0.0,
+                       height: getTotalHeightInMeters() ?? 0.0,
                        weight: double.tryParse(yourWeightTEcontroller.text) ?? 0.0,
                        age: int.tryParse(yourAgeTEcontroller.text) ?? 0,
                        bmi: bmi,
@@ -196,27 +214,27 @@ class UserInputWidget extends StatelessWidget {
     );
   }
 
+  double getTotalHeightInMeters(){
+    double heightInFeet = double.tryParse(yourHeightInFeetTEcontroller.text) ?? 0.0;
+    double heightInInch = double.tryParse(yourHeightInInchTEcontroller.text) ?? 0.0;
+    double height = (heightInFeet*12)+heightInInch;
+    double heightInMeters = height*0.0254;
+    return heightInMeters;
+  }
   double BMIformula(){
     double weightInKg = double.tryParse(yourWeightTEcontroller.text) ?? 0.0;
-    double heightInft = double.tryParse(yourHeightTEcontroller.text) ?? 0.0;
-    double heightInMeeter = heightInft*0.3048;
+    double heightInMeeter = getTotalHeightInMeters();
     double bmi = weightInKg/pow(heightInMeeter, 2);
     return bmi;
   }
 
-  // bool genderIdentification(bool inMale){
-  //   if(isMale == true){
-  //     return isMale;
-  //   }else{
-  //     return isMale;
-  //   }
-  // }
 
   void clearTextField(){
     yourNameTEcontroller.clear();
     yourAddressTEcontroller.clear();
     yourAgeTEcontroller.clear();
-    yourHeightTEcontroller.clear();
+    yourHeightInFeetTEcontroller.clear();
+    yourHeightInInchTEcontroller.clear();
     yourWeightTEcontroller.clear();
   }
 
@@ -224,7 +242,8 @@ class UserInputWidget extends StatelessWidget {
     yourNameTEcontroller.dispose();
     yourAddressTEcontroller.dispose();
     yourAgeTEcontroller.dispose();
-    yourHeightTEcontroller.dispose();
+    yourHeightInFeetTEcontroller.dispose();
+    yourHeightInInchTEcontroller.dispose();
     yourWeightTEcontroller.dispose();
   }
 }
