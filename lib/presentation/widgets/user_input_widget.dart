@@ -146,7 +146,12 @@ class UserInputWidget extends StatelessWidget {
                       }
                     },
 
-                    decoration: const InputDecoration(hintText: "Feet"),),
+                    decoration: const InputDecoration(
+                        hintText: "Feet",
+                      hintStyle: TextStyle(
+                        color: Colors.grey
+                      )
+                    ),),
                 ),
                 const SizedBox(width: 16,),
                 Expanded(
@@ -158,7 +163,13 @@ class UserInputWidget extends StatelessWidget {
                         return "Enter a valid value";
                       }
                     },
-                    decoration: const InputDecoration(hintText: "Inch"),),
+                    decoration: const InputDecoration(
+                        hintText: "Inch",
+                      hintStyle: TextStyle(
+                        color: Colors.grey
+                      )
+
+                    ),),
                 ),
               ],),
               const SizedBox(height: 24,),
