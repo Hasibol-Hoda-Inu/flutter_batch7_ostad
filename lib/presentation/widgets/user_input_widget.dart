@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:bmi_calculator/application/app.dart';
 import 'package:bmi_calculator/presentation/result_output_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +17,8 @@ class UserInputWidget extends StatelessWidget {
   TextEditingController yourWeightTEcontroller = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String? selectGender;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +78,9 @@ class UserInputWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    selectGender = "male";
+                  },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -103,7 +106,9 @@ class UserInputWidget extends StatelessWidget {
               const SizedBox(width: 16,),
               Expanded(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    selectGender = "female";
+                  },
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -169,6 +174,7 @@ class UserInputWidget extends StatelessWidget {
                        weight: double.tryParse(yourWeightTEcontroller.text) ?? 0.0,
                        age: int.tryParse(yourAgeTEcontroller.text) ?? 0,
                        bmi: bmi,
+                       gender: selectGender ?? " ",
                      ))).then((_){
                    clearTextField();
                  });
@@ -197,6 +203,14 @@ class UserInputWidget extends StatelessWidget {
     double bmi = weightInKg/pow(heightInMeeter, 2);
     return bmi;
   }
+
+  // bool genderIdentification(bool inMale){
+  //   if(isMale == true){
+  //     return isMale;
+  //   }else{
+  //     return isMale;
+  //   }
+  // }
 
   void clearTextField(){
     yourNameTEcontroller.clear();

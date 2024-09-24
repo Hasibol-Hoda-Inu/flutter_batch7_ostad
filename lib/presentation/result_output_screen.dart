@@ -11,7 +11,8 @@ class ResultOutputScreen extends StatelessWidget {
     required this.height,
     required this.weight,
     required this.age,
-    required this.bmi
+    required this.bmi,
+    required this.gender
   });
 
   final String name;
@@ -20,11 +21,12 @@ class ResultOutputScreen extends StatelessWidget {
   final double weight;
   final int age;
   final double bmi;
+  final String gender;
 
   @override
   Widget build(BuildContext context) {
 
-    Map<String, String> bmiData = imageChangeOnBmi(bmi);
+    Map<String, String> bmiData = imageChangeOnBmi(bmi, gender);
 
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +43,7 @@ class ResultOutputScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 60,),
+              const SizedBox(height: 50,),
               Container(
                 decoration: BoxDecoration(
                   color: customColor,
@@ -172,34 +174,45 @@ class ResultOutputScreen extends StatelessWidget {
     );
   }
 
-  Map<String, String> imageChangeOnBmi(double bmi) {
+  Map<String, String> imageChangeOnBmi(double bmi, String gender) {
+
+    String imagePath;
+
+    if(gender=="male"){
+      imagePath = "assets/images/male_";
+    }else if(gender =="female"){
+      imagePath = "assets/images/female_";
+    }else{
+      imagePath = "assets/images/male_";
+    }
+
     if(bmi<=18.5){
       return {
-        "img": "assets/images/underweight.svg",
+        "img": "${imagePath}underweight.svg",
         "status": "Underweight",
         "comment": "BMI is less than 18.5",
-        "statement": "Being underweight may increase the risk of malnutrition, weakened immunity, and osteoporosis.",
+        "statement": "Being underweight can suggest a lack of essential body fat and muscle mass, which can lead to a weakened immune system, decreased bone strength, and an increased vulnerability to infections, making overall health more fragile.",
       };
     }else if(bmi >18.5 && bmi<=25){
       return {
-        "img": "assets/images/healthy.svg",
+        "img": "${imagePath}healthy.svg",
         "status": "Healthy weight",
         "comment": "BMI is less than 25",
-        "statement": "A healthy weight reduces the risk of heart disease, stroke, and diabetes.",
+        "statement": "Maintaining a healthy weight not only reduces the risk of heart disease, stroke, and type 2 diabetes, but also promotes long-term cardiovascular health, stronger bones, and an overall improvement in quality of life.",
       };
     }else if(bmi>25 && bmi<=30){
       return {
-        "img": "assets/images/overweight.svg",
+        "img": "${imagePath}overweight.svg",
         "status": "Overweight",
         "comment": "BMI is between 25 and 29.9",
-        "statement": "Being underweight may indicate insufficient body fat and muscle mass, which can lead to weakened immune function",
+        "statement": "Being overweight raises the risk of developing health issues like high blood pressure, diabetes, and joint problems, while also contributing to potential heart disease and sleep disturbances.",
       };
     }else{
       return {
-        "img": "assets/images/obese.svg",
+        "img": "${imagePath}obese.svg",
         "status": "Obese",
         "comment": "BMI is 30 or higher",
-        "statement": "Obesity increases the risk of severe health problems such as heart disease, diabetes, and certain cancers.",
+        "statement": "Obesity significantly raises the risk of severe health problems, including heart disease, type 2 diabetes, high blood pressure, and even certain types of cancer, like colon and breast cancer. Managing weight through diet and exercise can help reduce these risks.",
       };
     }
   }
