@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/screens/onboarding_screens/pin_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_up_screen.dart';
 import 'package:task_manager/presentation/utils/app_colors.dart';
@@ -12,7 +13,7 @@ class TaskManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: const PinVerificationScreen(),
       theme: ThemeData(
         colorSchemeSeed: AppColors.primaryColor,
         textTheme: const TextTheme(),

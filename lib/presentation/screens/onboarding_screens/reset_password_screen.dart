@@ -62,7 +62,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                            onPressed: (){},
+                            onPressed: _verifyEmailMethod,
                             child: const Icon(Icons.arrow_circle_right_outlined,
                                 color: Colors.white,
                                 size: 26)
@@ -71,6 +71,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       const SizedBox(height: 60,),
                     ],);
   }
+  void _verifyEmailMethod(){}
 
   Widget _signInSection() {
     return Center(
