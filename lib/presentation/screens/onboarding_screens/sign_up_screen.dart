@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/screens/onboarding_screens/email_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';
 
@@ -86,11 +87,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       )
                   ),
                 ),
+                _buildOnTapNextButton()
+              ],);
+  }
+
+  Column _buildOnTapNextButton() {
+    return Column(children: [
                 const SizedBox(height: 20,),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      onPressed: (){},
+                      onPressed: _onTapNavigateToEmailVerificationScreen,
                       child: const Icon(Icons.arrow_circle_right_outlined,
                           color: Colors.white,
                           size: 26)
@@ -98,6 +105,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 60,),
               ],);
+  }
+
+  void _onTapNavigateToEmailVerificationScreen(){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
   }
 
   Center _signInSection() {

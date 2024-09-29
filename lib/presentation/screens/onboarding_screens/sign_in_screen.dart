@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/reset_password_screen.dart';
 import 'package:task_manager/presentation/utils/app_colors.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';
@@ -73,7 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ],);
   }
   void _onTabNextButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const EmailVerificationScreen()));
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (BuildContext context)=>const MainBottomNavScreen()),
+            (Route<dynamic> route)=>false);
   }
 
   Widget _buildSignUpSection() {

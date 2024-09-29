@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 
 import '../../utils/app_colors.dart';
 import '../../widgets/screen_background.dart';
@@ -36,6 +37,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
               PinCodeTextField(
                 length: 6,
                 obscureText: false,
+                keyboardType: TextInputType.number,
                 animationType: AnimationType.fade,
                 pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
@@ -52,24 +54,34 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                 enableActiveFill: true,
                 appContext: context,
               ),
-              const SizedBox(height: 20,),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                    onPressed: (){},
-                    child: const Text("Verify", style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600
-                    ),)
-                ),
-              ),
-              const SizedBox(height: 60,),
+              _buildOnTapSubmissionMethod(),
               _signInSectionMethod()
             ],
           ),
         ),),
     );
+  }
+
+  Widget _buildOnTapSubmissionMethod() {
+    return Column(children: [
+              const SizedBox(height: 20,),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: _onTapNavigateToBNS,
+                    child: const Text("Verify", style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600
+                    ),)
+                ),
+              ),
+              const SizedBox(height: 60,),
+            ],);
+  }
+
+  void _onTapNavigateToBNS(){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>const MainBottomNavScreen()));
   }
 
   Widget _signInSectionMethod() {

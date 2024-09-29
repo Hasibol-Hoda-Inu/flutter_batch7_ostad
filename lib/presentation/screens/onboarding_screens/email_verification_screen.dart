@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/screens/onboarding_screens/pin_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';
 
@@ -65,7 +66,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             ],);
   }
   void _onTabNextButton(){
-    //TODO: implement on tab action
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>const PinVerificationScreen()));
   }
 
   Widget _signInSectionMethod() {
