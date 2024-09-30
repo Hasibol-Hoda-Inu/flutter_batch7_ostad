@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onTabNextButton(){
     Navigator.pushAndRemoveUntil(context,
         MaterialPageRoute(builder: (BuildContext context)=>const MainBottomNavScreen()),
-            (Route<dynamic> route)=>false);
+            (value)=>false);
   }
 
   Widget _buildSignUpSection() {

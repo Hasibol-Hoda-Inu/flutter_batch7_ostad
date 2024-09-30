@@ -13,7 +13,7 @@ class TaskManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: const SplashScreen(),
       theme: ThemeData(
         colorSchemeSeed: AppColors.primaryColor,
         textTheme: const TextTheme(),
