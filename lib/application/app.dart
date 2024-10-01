@@ -30,7 +30,8 @@ class TaskManager extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 15,)
+          fixedSize: const Size.fromWidth(double.maxFinite),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 45)
         )
       );
   }
@@ -39,6 +40,7 @@ class TaskManager extends StatelessWidget {
     return InputDecorationTheme(
       fillColor: Colors.white,
       filled: true,
+      hintStyle: const TextStyle(color: Colors.grey),
       enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(6),
           borderSide: BorderSide.none
