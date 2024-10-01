@@ -21,55 +21,44 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           children: [
             _buildTaskSummeryMethod(textTheme),
             const SizedBox(height: 24,),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Lorem impsum dollar sit amit",
-                      style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),),
-                    const SizedBox(height: 8,),
-                    Text("Lorem ipsum dolor sit amet, conse ctetur adipis cing elit, sed do eiusmod tempor",
-                      style: textTheme.bodyLarge,),
-                    const SizedBox(height: 8,),
-                    Text("Date: 02/02/2024"),
-                    const SizedBox(height: 8,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Expanded(child:
+            ListView.separated(
+                itemBuilder: (BuildContext context, index)=>Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      Row(
-                        children: [
-                          ElevatedButton(
-                              onPressed: (){},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
-                                fixedSize: const Size.fromWidth(120),
-                                padding: const EdgeInsets.symmetric(vertical: 2),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50)
-                                )
-                              ),
-                              child: const Text('New', style: TextStyle(
-                                  color: Colors.white
-                              ),
-                              ))],
-                      ),
-                      Row(children: [
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.edit_note_outlined)),
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.delete_rounded)),
-                      ],),
-                    ],
-                    )
-                  ],
+                        Text("Lorem impsum dollar sit amit",
+                          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),),
+                        const SizedBox(height: 8,),
+                        Text("Lorem ipsum dolor sit amet, conse ctetur adipis cing elit, sed do eiusmod tempor",
+                          style: textTheme.bodyLarge,),
+                        const SizedBox(height: 8,),
+                        const Text("Date: 02/02/2024"),
+                        const SizedBox(height: 8,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Chip(label: Text('New'),),
+                            OverflowBar(children: [
+                              IconButton(onPressed: (){}, icon: const Icon(Icons.edit_note_outlined)),
+                              IconButton(onPressed: (){}, icon: const Icon(Icons.delete_rounded)),
+                            ],)
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
+                separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
+                itemCount: 10
+            ),)
           ],
         ),
       ),
