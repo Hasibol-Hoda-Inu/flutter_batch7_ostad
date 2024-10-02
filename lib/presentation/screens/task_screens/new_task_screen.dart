@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/task_card.dart';
 import '../../widgets/task_summery_widget.dart';
 import 'add_new_task_screen.dart';
 
@@ -23,39 +24,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             const SizedBox(height: 24,),
             Expanded(child:
             ListView.separated(
-                itemBuilder: (BuildContext context, index)=>Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Colors.white,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Lorem impsum dollar sit amit",
-                          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),),
-                        const SizedBox(height: 8,),
-                        Text("Lorem ipsum dolor sit amet, conse ctetur adipis cing elit, sed do eiusmod tempor",
-                          style: textTheme.bodyLarge,),
-                        const SizedBox(height: 8,),
-                        const Text("Date: 02/02/2024"),
-                        const SizedBox(height: 8,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Chip(label: Text('New'),),
-                            OverflowBar(children: [
-                              IconButton(onPressed: (){}, icon: const Icon(Icons.edit_note_outlined)),
-                              IconButton(onPressed: (){}, icon: const Icon(Icons.delete_rounded)),
-                            ],)
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                itemBuilder: (BuildContext context, index)=>TaskCard(textTheme: textTheme),
                 separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
                 itemCount: 10
             ),)
@@ -80,5 +49,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
 }
+
+
 
 
