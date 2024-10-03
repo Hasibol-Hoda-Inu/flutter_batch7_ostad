@@ -25,10 +25,10 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TMAppBar(),
+      appBar: const TMAppBar(),
       body: _screens[_selectedIndex],
       bottomNavigationBar: NavigationBar(
-        indicatorColor: AppColors.primaryColor,
+        indicatorColor: AppColors.primaryColor.withOpacity(0.7),
         selectedIndex: _selectedIndex,
         onDestinationSelected: (int index){
           setState(() {
@@ -41,7 +41,6 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
           NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "Cancelled"),
           NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "Progress"),
         ],
-        
       ),
     );
   }
