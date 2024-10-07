@@ -35,7 +35,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
             _selectedIndex = index;
           });
         },
-        destinations: [
+        destinations: const [
           NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "New Task",),
           NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "Completed"),
           NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "Cancelled"),
