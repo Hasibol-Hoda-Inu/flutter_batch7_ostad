@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/screens/profile_screen.dart';
 
+import '../controllers/auth_controller.dart';
 import '../utils/app_colors.dart';
 
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget{
@@ -42,7 +43,8 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget{
               ),),
             ],)),
           IconButton(
-              onPressed: (){
+              onPressed: () async {
+                await AuthController.clearUserData();
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const LoginScreen()), (predicate)=>false);
               },
               icon: const Icon(Icons.logout_rounded, color: Colors.white,))

@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/presentation/screens/onboarding_screens/email_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/utils/snackbar.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';

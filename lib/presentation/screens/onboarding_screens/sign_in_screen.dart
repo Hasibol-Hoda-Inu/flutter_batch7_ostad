@@ -1,11 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/presentation/controllers/auth_controller.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/reset_password_screen.dart';
 import 'package:task_manager/presentation/utils/app_colors.dart';
+import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';
 
-import 'email_verification_screen.dart';
+import '../../../data/utils/urls.dart';
+import '../../utils/snackbar.dart';
 import 'sign_up_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,11 +23,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
+
+  bool _inProgress = false;
+
   @override
   Widget build(BuildContext context) {
-
     TextTheme textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       backgroundColor: const Color(0xffFAF8F6),
       body: ScreenBackground(
@@ -42,41 +54,97 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _signInFormMethod() {
-    return Column(children: [
-                const SizedBox(height: 20,),
-                TextFormField(
-                  decoration: const InputDecoration(
-                      hintText: "Email",
-                      hintStyle: TextStyle(
-                          color: Colors.grey
-                      )
+    return Form(
+      key: _formKey,
+      child: Column(children: [
+                  const SizedBox(height: 20,),
+                  TextFormField(
+                    controller: _emailTEController,
+                    keyboardType: TextInputType.emailAddress,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (String? value){
+                      if(value?.isEmpty ?? true){
+                        return "Enter a valid email";
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                        hintText: "Email",
+                        hintStyle: TextStyle(
+                            color: Colors.grey
+                        )
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20,),
-                TextFormField(
-                  decoration: const InputDecoration(
-                      hintText: "Password",
-                      hintStyle: TextStyle(
-                          color: Colors.grey
-                      )
+                  const SizedBox(height: 20,),
+                  TextFormField(
+                    controller: _passwordTEController,
+                    obscureText: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (String? value){
+                      if(value?.isEmpty ?? true){
+                        return "Enter your password";
+                      }
+                      if(value!.length <=6){
+                        return "Enter a password more than 6 characters";
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                        hintText: "Password",
+                        hintStyle: TextStyle(
+                            color: Colors.grey
+                        )
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20,),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: _onTabNextButton,
-                      child: const Icon(Icons.arrow_circle_right_outlined,
-                          color: Colors.white,
-                          size: 26)
+                  const SizedBox(height: 20,),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Visibility(
+                      visible: !_inProgress,
+                      replacement: const CenterCircularProgressIndicator(),
+                      child: ElevatedButton(
+                          onPressed: _onTabNextButton,
+                          child: const Icon(Icons.arrow_circle_right_outlined,
+                              color: Colors.white,
+                              size: 26,
+                          )
+                      ),
+                    ),
                   ),
-                ),
-              ],);
+                ],),
+    );
   }
   void _onTabNextButton(){
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (BuildContext context)=>const MainBottomNavScreen()),
-            (value)=>false);
+    if(!_formKey.currentState!.validate()){
+      return;
+    }
+    _signIn();
+  }
+
+  Future<void> _signIn()async {
+    _inProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> reqBody = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text,
+    };
+    final NetworkResponse response = await NetworkCaller.postRequest(
+        url: Urls.signInUrl,
+        body: reqBody,
+    );
+
+    _inProgress = false;
+    setState(() {});
+    if(response.isSuccess){
+      await AuthController.saveAccessToken(response.responseData["token"]);
+
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (BuildContext context)=>const MainBottomNavScreen()),
+              (value)=>false);
+    }else{
+      showSnackBarMessage(context, response.errorMessage, true);
+    }
   }
 
   Widget _buildSignUpSection() {
