@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager/presentation/widgets/tm_app_bar_widget.dart';
 
+import '../../../data/models/network_response.dart';
+import '../../../data/services/network_caller.dart';
+import '../../../data/utils/urls.dart';
+import '../../controllers/auth_controller.dart';
+import '../../utils/snackbar.dart';
 import '../../widgets/screen_background.dart';
+import '../main_bottom_nav_screen.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -11,6 +18,11 @@ class AddNewTaskScreen extends StatefulWidget {
 }
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
+  TextEditingController _subjectTEController = TextEditingController();
+  TextEditingController _descriptionTEController = TextEditingController();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _inProgress = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,26 +41,95 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.bold),),
                 const SizedBox(height: 32,),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: "Subject",
-                  ),
-                ),
-                const SizedBox(height: 16,),
-                TextFormField(
-                  maxLines: 5,
-                  decoration: const InputDecoration(
-                    hintText: "Description",
-                  ),
-                ),
-                const SizedBox(height: 32,),
-                ElevatedButton(
-                    onPressed: (){},
-                    child: const Icon(Icons.arrow_circle_right_outlined, color: Colors.white,))
+               Form(
+                 key: _formKey,
+                   child: Column(
+                     children: [
+                       TextFormField(
+                         decoration: const InputDecoration(
+                           hintText: "Subject",
+                 ),
+                         controller: _subjectTEController,
+                         validator: (String? value){
+                           if(value?.isEmpty ?? true){
+                             return "Enter a subject";
+                           }return null;
+                         },
+               ),
+                       const SizedBox(height: 16,),
+                       TextFormField(
+                         controller: _descriptionTEController,
+                         validator: (String? value){
+                           if(value?.isEmpty ?? true){
+                             return "Enter your description";
+                           }return null;
+                         },
+                         maxLines: 5,
+                         decoration: const InputDecoration(
+                           hintText: "Description",
+                   ),
+                 ),
+                       const SizedBox(height: 32,),
+                     ],
+                   ),
+               ),
+                Visibility(
+                  visible: !_inProgress,
+                  replacement: const CenterCircularProgressIndicator(),
+                  child: ElevatedButton(
+                      onPressed: (){
+                        _onTabNextButton();
+                      },
+                      child: const Icon(Icons.arrow_circle_right_outlined, color: Colors.white,)),
+                )
               ],
             ),
           ),
         ),),
     );
+  }
+
+  void _onTabNextButton(){
+    if(!_formKey.currentState!.validate()){
+      return;
+    }
+    _addNewTask();
+  }
+
+  Future<void> _addNewTask()async {
+    _inProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> reqBody = {
+      "title": _subjectTEController.text.trim(),
+      "description": _descriptionTEController.text.trim(),
+      "status": "New"
+    };
+    final NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.createTaskUrl,
+      body: reqBody,
+    );
+
+    _inProgress = false;
+    setState(() {});
+
+    if(response.isSuccess){
+      clearForm();
+      showSnackBarMessage(context, "New task added successfully");
+    }else{
+      showSnackBarMessage(context, response.errorMessage, true);
+    }
+  }
+
+  void clearForm(){
+    _descriptionTEController.clear();
+    _subjectTEController.clear();
+  }
+
+  @override
+  void dispose() {
+    _subjectTEController.dispose();
+    _descriptionTEController.dispose();
+    super.dispose();
   }
 }

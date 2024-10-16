@@ -2,7 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:task_manager/application/app.dart';
+import 'package:task_manager/presentation/controllers/auth_controller.dart';
+import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 
 import '../models/network_response.dart';
 
@@ -22,6 +26,13 @@ class NetworkCaller{
           statusCode: response.statusCode, 
           responseData: decodedData,
         );
+      } else if(response.statusCode == 401){
+        _moveToLogin();
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: response.statusCode,
+          errorMessage: "Please login to continue",
+        );
       } else {
         return NetworkResponse(
             isSuccess: false,
@@ -40,9 +51,14 @@ class NetworkCaller{
   static Future<NetworkResponse> postRequest({required String url, Map<String, dynamic>? body}) async {
     Uri uri = Uri.parse(url);
     debugPrint(url);
+
+    Map<String, String>headers = {
+      "Content-type":"application/json",
+      "token": AuthController.accessToken.toString(),
+    };
     final Response response = await post(
       uri,
-      headers: {"Content-type":"application/json"},
+      headers:headers,
       body: jsonEncode(body),
     );
 
@@ -59,7 +75,14 @@ class NetworkCaller{
           statusCode: response.statusCode,
           responseData: decodedData,
         );
-      } else {
+      } else if(response.statusCode == 401){
+         _moveToLogin();
+         return NetworkResponse(
+             isSuccess: false,
+             statusCode: response.statusCode,
+             errorMessage: "Please login to continue",
+         );
+      }else {
         return NetworkResponse(
             isSuccess: false,
             statusCode: response.statusCode,
@@ -76,5 +99,10 @@ class NetworkCaller{
 
   static void printResponseInConsole(String url, Response response) {
     debugPrint("URL: $url \n ResponseCode: ${response.statusCode} \n ResponseBody: ${response.body}");
+  }
+  static Future<void> _moveToLogin() async {
+    await AuthController.clearUserData();
+    Navigator.pushAndRemoveUntil(TaskManager.navigatorKey.currentContext!,
+        MaterialPageRoute(builder: (context)=>const LoginScreen()), (value)=>false);
   }
 }
