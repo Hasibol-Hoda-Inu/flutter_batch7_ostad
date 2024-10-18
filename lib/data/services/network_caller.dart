@@ -14,7 +14,10 @@ class NetworkCaller{
   static Future<NetworkResponse> getRequest({required String url}) async {
     Uri uri = Uri.parse(url);
     debugPrint(url);
-    final Response response = await get(uri);
+    Map<String, String>headers = {
+      "token": AuthController.accessToken.toString(),
+    };
+    final Response response = await get(uri, headers: headers);
 
     printResponseInConsole(url, response);
 

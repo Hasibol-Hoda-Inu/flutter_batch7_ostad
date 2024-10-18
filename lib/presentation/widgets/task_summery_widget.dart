@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/task_model.dart';
 
-class TaskSummeryWidget extends StatelessWidget {
+
+class TaskSummeryWidget extends StatefulWidget {
   const TaskSummeryWidget({
     super.key,
     required this.textTheme,
   });
-
   final TextTheme textTheme;
 
+  @override
+  State<TaskSummeryWidget> createState() => _TaskSummeryWidgetState();
+}
+
+class _TaskSummeryWidgetState extends State<TaskSummeryWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        TaskSummeryContainer(textTheme: textTheme, title: 'Canceled', count: 90,),
+        TaskSummeryContainer(textTheme: widget.textTheme, title: 'Canceled', count: 90,),
         const SizedBox(width: 8,),
-        TaskSummeryContainer(textTheme: textTheme, title: 'Completed', count: 90,),
+        TaskSummeryContainer(textTheme: widget.textTheme, title: 'Completed', count: 90,),
         const SizedBox(width: 8,),
-        TaskSummeryContainer(textTheme: textTheme, title: 'Progress', count: 90,),
+        TaskSummeryContainer(textTheme: widget.textTheme, title: 'Progress', count: 90,),
         const SizedBox(width: 8,),
-        TaskSummeryContainer(textTheme: textTheme, title: 'New Task', count: 90,),
+        TaskSummeryContainer(textTheme: widget.textTheme, title: 'New Task', count: 90,),
       ],
     );
   }

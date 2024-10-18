@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/network_response.dart';
+import '../../data/models/task_list_model.dart';
+import '../../data/models/task_model.dart';
+import '../../data/services/network_caller.dart';
+import '../../data/utils/urls.dart';
+import '../utils/snackbar.dart';
+
 class TaskCard extends StatefulWidget {
   const TaskCard({
     super.key,
     required this.textTheme,
+    required this.taskList,
   });
 
   final TextTheme textTheme;
+  final TaskModel taskList;
 
   @override
   State<TaskCard> createState() => _TaskCardState();
@@ -26,13 +35,13 @@ class _TaskCardState extends State<TaskCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Lorem impsum dollar sit amit",
+            Text(widget.taskList.title ?? "",
               style: widget.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),),
             const SizedBox(height: 8,),
-            Text("Lorem ipsum dolor sit amet, conse ctetur adipis cing elit, sed do eiusmod tempor",
+            Text(widget.taskList.description ?? "",
               style: widget.textTheme.bodyLarge,),
             const SizedBox(height: 8,),
-            const Text("Date: 02/02/2024"),
+            Text("Date: ${widget.taskList.createdDate}"),
             const SizedBox(height: 8,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,6 +89,19 @@ class _TaskCardState extends State<TaskCard> {
   }
 
   void _onTapDeleteButton(){}
+
+  // Future<void>_deleteTask()async {
+  //   TaskModel taskModel = TaskModel[index]._id;
+  //   String _id = taskModel
+  //   final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.deleteTaskUrl);
+  //   if(response.isSuccess){
+  //     final TaskListModel taskListModel = TaskListModel.fromJson(response.responseData!);
+  //
+  //   }else{
+  //     showSnackBarMessage(context, response.errorMessage, true);
+  //   }
+  //   setState(() {});
+  // }
 
   Widget _buildTaskStatusChip() => const Chip(label: Text('New'),);
 }
