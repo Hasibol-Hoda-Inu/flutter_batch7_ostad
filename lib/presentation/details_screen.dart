@@ -102,83 +102,121 @@ class DetailsScreen extends StatelessWidget {
                     ),
                     ),
                   ),
-              ],),
-              const SizedBox(height: 40,),
-              const Row(
+                ],
+              ),
+              Column(
                 children: [
-                Text("Overview", style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  color: Color(0xff1B1B1B)
-                ),),
-                SizedBox(width: 32,),
-                Text("Details", style: TextStyle(
-                  color: Color(0x621B1B1B),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600
-                ),),
-              ],),
-              const SizedBox(height: 32,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+                  const SizedBox(height: 40,),
+                  const Row(
                     children: [
-                      IconButton.filledTonal(
-                          onPressed: (){},
-                          style: IconButton.styleFrom(
-                            backgroundColor: const Color(0xffEDEDED),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6)
-                            )
-                          ),
-                          icon: const Icon(Icons.watch_later)),
-                      const Text("8 hours", style: TextStyle(
-                        color: Color(0xff7E7E7E),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),)
+                      Text("Overview", style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          color: Color(0xff1B1B1B)
+                      ),),
+                      SizedBox(width: 32,),
+                      Text("Details", style: TextStyle(
+                          color: Color(0x621B1B1B),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600
+                      ),),
                     ],),
+                  const SizedBox(height: 32,),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton.filledTonal(
-                          onPressed: (){},
-                          style: IconButton.styleFrom(
-                            backgroundColor: const Color(0xffEDEDED),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6)
-                            )
-                          ),
-                          icon: const Icon(Icons.watch_later)),
-                      const Text("8 hours", style: TextStyle(
-                        color: Color(0xff7E7E7E),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),)
-                    ],),
-                  Row(
-                    children: [
-                      IconButton.filledTonal(
-                          onPressed: (){},
-                          style: IconButton.styleFrom(
-                            backgroundColor: const Color(0xffEDEDED),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6)
-                            )
-                          ),
-                          icon: const Icon(Icons.watch_later)),
-                      const Text("8 hours", style: TextStyle(
-                        color: Color(0xff7E7E7E),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),)
-                    ],),
+                      Row(
+                        children: [
+                          IconButton.filledTonal(
+                              onPressed: (){},
+                              style: IconButton.styleFrom(
+                                  backgroundColor: const Color(0xffEDEDED),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6)
+                                  )
+                              ),
+                              icon: const Icon(Icons.watch_later)),
+                          const Text("8 hours", style: TextStyle(
+                            color: Color(0xff7E7E7E),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),)
+                        ],),
+                      Row(
+                        children: [
+                          IconButton.filledTonal(
+                              onPressed: (){},
+                              style: IconButton.styleFrom(
+                                  backgroundColor: const Color(0xffEDEDED),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6)
+                                  )
+                              ),
+                              icon: const Icon(Icons.watch_later)),
+                          const Text("8 hours", style: TextStyle(
+                            color: Color(0xff7E7E7E),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),)
+                        ],),
+                      Row(
+                        children: [
+                          IconButton.filledTonal(
+                              onPressed: (){},
+                              style: IconButton.styleFrom(
+                                  backgroundColor: const Color(0xffEDEDED),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6)
+                                  )
+                              ),
+                              icon: const Icon(Icons.watch_later)),
+                          const Text("8 hours", style: TextStyle(
+                            color: Color(0xff7E7E7E),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),)
+                        ],),
+                    ],
+                  ),
+                  const SizedBox(height: 34,),
+                  const Text("This vast mountain range is renowned for its remarkable diversity in terms of topography and climate. It features towering peaks, active volcanoes, deep canyons, expansive plateaus, and lush valleys. The Andes are This vast mountain range is renowned for its",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18,
+                    ),),
                 ],
               ),
             ],
           ),
         ),
       ),
+      floatingActionButton: SizedBox(
+        height: 65,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28.0,),
+          child: ElevatedButton(
+              onPressed: (){},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff1B1B1B),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)
+                )
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Book Now", style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20
+                  ),),
+                  SizedBox(width: 20,),
+                  Icon(Icons.arrow_forward_ios, color: Colors.white,)
+                ],
+              )
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
