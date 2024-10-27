@@ -152,7 +152,7 @@ class DetailsScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(6)
                                   )
                               ),
-                              icon: const Icon(Icons.watch_later)),
+                              icon: const Icon(Icons.cloud)),
                           const Text("8 hours", style: TextStyle(
                             color: Color(0xff7E7E7E),
                             fontSize: 18,
@@ -169,7 +169,7 @@ class DetailsScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(6)
                                   )
                               ),
-                              icon: const Icon(Icons.watch_later)),
+                              icon: const Icon(Icons.star_rounded)),
                           const Text("8 hours", style: TextStyle(
                             color: Color(0xff7E7E7E),
                             fontSize: 18,
