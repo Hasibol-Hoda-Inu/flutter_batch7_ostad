@@ -72,6 +72,15 @@ class _TaskCardState extends State<TaskCard> {
         mainAxisSize: MainAxisSize.min,
         children: ["New", "Completed", "Canceled", "Progress"].map((e)=>ListTile(
           title: Text(e),
+          leading: Radio(
+            value: e,
+            groupValue: e,
+            onChanged: (value){
+              setState(() {
+                e = value.toString();
+              });
+            },
+          ),
           onTap: (){},
         )).toList(),
       ),
@@ -88,20 +97,35 @@ class _TaskCardState extends State<TaskCard> {
     ));
   }
 
-  void _onTapDeleteButton(){}
+  void _onTapDeleteButton(){
+    showDialog(context: context, builder: (BuildContext context)=>AlertDialog(
+      title: const Text("Do you want to delete?"),
+      actions: [
+        TextButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+            child: const Text("No")),
+        TextButton(
+            onPressed: (){
+              _deleteTask();
+              Navigator.pop(context);
+            },
+            child: const Text("Yes")),
+      ],
+    ));
+  }
 
-  // Future<void>_deleteTask()async {
-  //   TaskModel taskModel = TaskModel[index]._id;
-  //   String _id = taskModel
-  //   final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.deleteTaskUrl);
-  //   if(response.isSuccess){
-  //     final TaskListModel taskListModel = TaskListModel.fromJson(response.responseData!);
-  //
-  //   }else{
-  //     showSnackBarMessage(context, response.errorMessage, true);
-  //   }
-  //   setState(() {});
-  // }
+  Future<void>_deleteTask()async {
+    String id = widget.taskList.sId ?? "";
+    final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.deleteUrl+id);
+    if(response.isSuccess){
+      showSnackBarMessage(context, "Successfully deleted", false);
+    }else{
+      showSnackBarMessage(context, response.errorMessage, true);
+    }
+    setState(() {});
+  }
 
-  Widget _buildTaskStatusChip() => const Chip(label: Text('New'),);
+  Widget _buildTaskStatusChip() => Chip(label: Text(widget.taskList.status ?? ""),);
 }
