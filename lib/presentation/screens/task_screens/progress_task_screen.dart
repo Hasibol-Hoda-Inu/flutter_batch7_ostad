@@ -31,7 +31,12 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
       child: ListView.separated(
-          itemBuilder: (BuildContext context, index)=>TaskCard(textTheme: textTheme, taskList: _progressTaskList[index],),
+          itemBuilder: (BuildContext context, index)=>TaskCard(
+            textTheme: textTheme,
+            taskList: _progressTaskList[index],
+            onRefreshList: () {
+              _getNewTaskList();
+            },),
           separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
           itemCount: _progressTaskList.length
       ),

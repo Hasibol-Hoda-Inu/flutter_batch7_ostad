@@ -34,7 +34,12 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
         visible: !_completedTaskInProgress,
         replacement: const CenterCircularProgressIndicator(),
         child: ListView.separated(
-            itemBuilder: (BuildContext context, index)=>TaskCard(textTheme: textTheme, taskList: _completedTaskList[index],),
+            itemBuilder: (BuildContext context, index)=>TaskCard(
+              textTheme: textTheme,
+              taskList: _completedTaskList[index],
+              onRefreshList: () {
+                _getNewTaskList();
+              },),
             separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
             itemCount: _completedTaskList.length
         ),

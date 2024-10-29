@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../data/models/network_response.dart';
-import '../../data/models/task_list_model.dart';
 import '../../data/models/task_model.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/urls.dart';
@@ -12,10 +11,12 @@ class TaskCard extends StatefulWidget {
     super.key,
     required this.textTheme,
     required this.taskList,
+    required this.onRefreshList,
   });
 
   final TextTheme textTheme;
   final TaskModel taskList;
+  final VoidCallback onRefreshList;
 
   @override
   State<TaskCard> createState() => _TaskCardState();
@@ -120,6 +121,7 @@ class _TaskCardState extends State<TaskCard> {
     String id = widget.taskList.sId ?? "";
     final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.deleteUrl+id);
     if(response.isSuccess){
+      widget.onRefreshList();
       showSnackBarMessage(context, "Successfully deleted", false);
     }else{
       showSnackBarMessage(context, response.errorMessage, true);

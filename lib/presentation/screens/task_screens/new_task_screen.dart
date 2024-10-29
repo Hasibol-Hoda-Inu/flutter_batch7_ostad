@@ -53,7 +53,13 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 visible: !_getNewTaskListInProgress,
                 replacement: const CenterCircularProgressIndicator(),
                 child: ListView.separated(
-                    itemBuilder: (BuildContext context, index)=>TaskCard(textTheme: textTheme, taskList: _newTaskList[index],),
+                    itemBuilder: (BuildContext context, index)=>TaskCard(
+                      textTheme: textTheme,
+                      taskList: _newTaskList[index],
+                      onRefreshList: () {
+                        _getNewTaskList();
+                        _getTaskStatus();
+                    },),
                     separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
                     itemCount: _newTaskList.length
                 ),
@@ -94,24 +100,19 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget _buildTaskSummeryMethod() {
     return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
+
             child: Visibility(
                 visible: !_getNewTaskListInProgress,
                 replacement: const CenterCircularProgressIndicator(),
                 child: Row(
-                  children: [
-                    ..._getTaskSummeryWidget(),
-                  ],
+                  children: _getTaskSummeryWidget(),
                 )
             ),
           );
   }
 
   List<TaskSummeryWidget>_getTaskSummeryWidget(){
-    List<TaskSummeryWidget> taskSummeryWidgetList = [];
-    for(SummeryData t in _taskStatusList){
-      taskSummeryWidgetList.add(TaskSummeryWidget(count: t.sum ?? 0, title: t.sId!,));
-    }
-    return taskSummeryWidgetList;
+    return _taskStatusList.map((t)=>TaskSummeryWidget(title: t.sId!, count: t.sum ?? 0)).toList();
   }
 
   Future<void>_getTaskStatus()async {

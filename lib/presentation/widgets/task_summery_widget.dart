@@ -16,16 +16,15 @@ class TaskSummeryWidget extends StatefulWidget {
 class _TaskSummeryWidgetState extends State<TaskSummeryWidget> {
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
     return Row(
       children: [
-        TaskSummeryContainer(textTheme: textTheme, title: widget.title, count: widget.count,),
+        TaskSummeryContainer(title: "New", count: widget.count,),
         const SizedBox(width: 8,),
-        TaskSummeryContainer(textTheme: textTheme, title: widget.title, count: widget.count,),
+        TaskSummeryContainer(title: "Completed", count: widget.count ?? 0,),
         const SizedBox(width: 8,),
-        TaskSummeryContainer(textTheme: textTheme, title: widget.title, count: widget.count,),
+        TaskSummeryContainer(title: "Cancelled", count: widget.count ?? 0,),
         const SizedBox(width: 8,),
-        TaskSummeryContainer(textTheme: textTheme, title: widget.title, count: widget.count,),
+        TaskSummeryContainer(title: "Progress", count: widget.count ?? 0,),
       ],
     );
   }
@@ -34,17 +33,15 @@ class _TaskSummeryWidgetState extends State<TaskSummeryWidget> {
 class TaskSummeryContainer extends StatelessWidget {
   const TaskSummeryContainer({
     super.key,
-    required this.textTheme,
     required this.title,
     required this.count,
   });
-
-  final TextTheme textTheme;
   final String title;
   final int count;
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),

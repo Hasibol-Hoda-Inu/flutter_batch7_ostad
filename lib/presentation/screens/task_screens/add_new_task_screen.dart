@@ -26,10 +26,11 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop)async{
+      onPopInvokedWithResult: (didPop, result)async{
         if(didPop){
           return;
-        }else{
+        }
+        else{
           Navigator.pop(context, true);
         }
       },
