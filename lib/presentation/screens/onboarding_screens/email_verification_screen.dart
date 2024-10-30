@@ -1,7 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/pin_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
+import 'package:task_manager/presentation/utils/snackbar.dart';
+import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';
 
 import '../../utils/app_colors.dart';
@@ -14,6 +19,8 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+  TextEditingController _emailTEController = TextEditingController();
+  bool inProgress = false;
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -49,24 +56,49 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     hintText: "Email",
                     hintStyle: TextStyle(
                         color: Colors.grey
-                    )
+                    ),
                 ),
+                controller: _emailTEController,
               ),
               const SizedBox(height: 20,),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                    onPressed: _onTabNextButton,
-                    child: const Icon(Icons.arrow_circle_right_outlined,
-                        color: Colors.white,
-                        size: 26)
+                child: Visibility(
+                  visible: !inProgress,
+                  replacement: const CenterCircularProgressIndicator(),
+                  child: ElevatedButton(
+                      onPressed: _getRecoverVerifyEmail,
+                      child: const Icon(Icons.arrow_circle_right_outlined,
+                          color: Colors.white,
+                          size: 26)
+                  ),
                 ),
               ),
               const SizedBox(height: 60,),
             ],);
   }
+
   void _onTabNextButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const PinVerificationScreen()));
+    String email = _emailTEController.text.trim();
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (BuildContext context)=> PinVerificationScreen(email: email,)),
+            (value)=>false);
+  }
+
+  Future<void> _getRecoverVerifyEmail()async {
+    inProgress = true;
+    setState(() {});
+    String email = _emailTEController.text.trim();
+    NetworkResponse response = await NetworkCaller.getRequest(url: Urls.verifyEmail(email));
+    if(response.isSuccess){
+      showSnackBarMessage(context, "A pin has been sent");
+      _onTabNextButton();
+      debugPrint("${response.statusCode}");
+    }else{
+      showSnackBarMessage(context, response.errorMessage);
+    }
+    inProgress = false;
+    setState(() {});
   }
 
   Widget _signInSectionMethod() {

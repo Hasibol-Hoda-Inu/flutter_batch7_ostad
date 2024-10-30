@@ -23,6 +23,13 @@ class TaskCard extends StatefulWidget {
 }
 
 class _TaskCardState extends State<TaskCard> {
+  String _selectedStatus = '';
+  bool _changeStatusInProgress = false;
+  @override
+  void initState() {
+    super.initState();
+    _selectedStatus = widget.taskList.status!;
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -73,16 +80,12 @@ class _TaskCardState extends State<TaskCard> {
         mainAxisSize: MainAxisSize.min,
         children: ["New", "Completed", "Canceled", "Progress"].map((e)=>ListTile(
           title: Text(e),
-          leading: Radio(
-            value: e,
-            groupValue: e,
-            onChanged: (value){
-              setState(() {
-                e = value.toString();
-              });
-            },
-          ),
-          onTap: (){},
+          onTap: (){
+            _changeStatus(e);
+            Navigator.pop(context);
+          },
+          selected: _selectedStatus ==e,
+          trailing: _selectedStatus == e ? const Icon(Icons.check): null,
         )).toList(),
       ),
       actions: [
@@ -91,11 +94,21 @@ class _TaskCardState extends State<TaskCard> {
               Navigator.pop(context);
             },
             child: const Text("Cancel")),
-        TextButton(
-            onPressed: (){},
-            child: const Text("Okay")),
       ],
     ));
+  }
+
+  Future<void> _changeStatus(String newStatus)async {
+    _changeStatusInProgress = true;
+    setState(() {});
+    final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.changeStatus(widget.taskList.sId!, newStatus));
+    if(response.isSuccess){
+      widget.onRefreshList();
+    }else{
+      _changeStatusInProgress = false;
+      setState(() {});
+      showSnackBarMessage(context, response.errorMessage);
+    }
   }
 
   void _onTapDeleteButton(){

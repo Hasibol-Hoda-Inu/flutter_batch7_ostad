@@ -22,7 +22,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   @override
   void initState() {
     super.initState();
-    _getNewTaskList();
+    _getCompletedTaskList();
   }
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
               textTheme: textTheme,
               taskList: _completedTaskList[index],
               onRefreshList: () {
-                _getNewTaskList();
+                _getCompletedTaskList();
               },),
             separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
             itemCount: _completedTaskList.length
@@ -47,7 +47,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
     ),
     );
   }
-  Future<void>_getNewTaskList()async {
+  Future<void>_getCompletedTaskList()async {
     _completedTaskList.clear();
     _completedTaskInProgress = true;
     setState(() {});

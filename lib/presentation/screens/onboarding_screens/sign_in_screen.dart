@@ -6,13 +6,13 @@ import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/presentation/controllers/auth_controller.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
-import 'package:task_manager/presentation/screens/onboarding_screens/reset_password_screen.dart';
 import 'package:task_manager/presentation/utils/app_colors.dart';
 import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';
 
 import '../../../data/utils/urls.dart';
 import '../../utils/snackbar.dart';
+import 'email_verification_screen.dart';
 import 'sign_up_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -179,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
   void _onTabForgetPassword(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const ResetPasswordScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>const EmailVerificationScreen()));
   }
   void _onTabSignUpScreen(){
     Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpScreen()));

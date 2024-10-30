@@ -59,7 +59,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                       onRefreshList: () {
                         _getNewTaskList();
                         _getTaskStatus();
-                    },),
+                    },
+                    ),
                     separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
                     itemCount: _newTaskList.length
                 ),
@@ -100,7 +101,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget _buildTaskSummeryMethod() {
     return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-
             child: Visibility(
                 visible: !_getNewTaskListInProgress,
                 replacement: const CenterCircularProgressIndicator(),
@@ -111,8 +111,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           );
   }
 
-  List<TaskSummeryWidget>_getTaskSummeryWidget(){
-    return _taskStatusList.map((t)=>TaskSummeryWidget(title: t.sId!, count: t.sum ?? 0)).toList();
+  List<TaskSummeryContainer>_getTaskSummeryWidget(){
+    return _taskStatusList.map((t)=>TaskSummeryContainer(title: t.sId!, count: t.sum ?? 0)).toList();
   }
 
   Future<void>_getTaskStatus()async {

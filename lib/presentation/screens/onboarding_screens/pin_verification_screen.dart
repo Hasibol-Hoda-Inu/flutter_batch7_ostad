@@ -1,20 +1,32 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
+import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 
+import '../../../data/utils/urls.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/snackbar.dart';
 import '../../widgets/screen_background.dart';
+import 'reset_password_screen.dart';
 import 'sign_in_screen.dart';
 
 class PinVerificationScreen extends StatefulWidget {
-  const PinVerificationScreen({super.key});
+  const PinVerificationScreen({
+    super.key,
+    required this.email,
+  });
+
+  final String email;
 
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
+  TextEditingController _pinTEController = TextEditingController();
+  bool inProgress = false;
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -35,6 +47,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
               ),
               const SizedBox(height: 20,),
               PinCodeTextField(
+                controller: _pinTEController,
                 length: 6,
                 obscureText: false,
                 keyboardType: TextInputType.number,
@@ -67,13 +80,17 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
               const SizedBox(height: 20,),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                    onPressed: _onTapNavigateToBNS,
-                    child: const Text("Verify", style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600
-                    ),)
+                child: Visibility(
+                  visible: !inProgress,
+                  replacement: const CenterCircularProgressIndicator(),
+                  child: ElevatedButton(
+                      onPressed: _getRecoverVerifyOTP,
+                      child: const Text("Verify", style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600
+                      ),)
+                  ),
                 ),
               ),
               const SizedBox(height: 60,),
@@ -81,7 +98,28 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   void _onTapNavigateToBNS(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const MainBottomNavScreen()));
+    String otp = _pinTEController.text;
+    String email = widget.email;
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (BuildContext context)=> ResetPasswordScreen(email: email, OTP: otp,)),
+            (value)=>false);
+  }
+
+  Future<void> _getRecoverVerifyOTP()async {
+    inProgress = true;
+    setState(() {});
+
+    String otp = _pinTEController.text;
+    String email = widget.email;
+    NetworkResponse response = await NetworkCaller.getRequest(url: Urls.verifyOTP(email, otp));
+    if(response.isSuccess){
+      _onTapNavigateToBNS();
+      showSnackBarMessage(context, "Set your new password");
+    }else{
+      showSnackBarMessage(context, response.errorMessage);
+    }
+    inProgress = false;
+    setState(() {});
   }
 
   Widget _signInSectionMethod() {
