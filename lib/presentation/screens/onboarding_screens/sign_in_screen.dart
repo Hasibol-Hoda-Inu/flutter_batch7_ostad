@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/login_model.dart';
 import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/models/user_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/presentation/controllers/auth_controller.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
@@ -137,7 +139,9 @@ class _LoginScreenState extends State<LoginScreen> {
     _inProgress = false;
     setState(() {});
     if(response.isSuccess){
-      await AuthController.saveAccessToken(response.responseData["token"]);
+      final LoginModel loginModel = LoginModel.fromJson(response.responseData);
+      await AuthController.saveAccessToken(loginModel.token!);
+      await AuthController.saveUserData(loginModel.data!);
 
       Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (BuildContext context)=>const MainBottomNavScreen()),
