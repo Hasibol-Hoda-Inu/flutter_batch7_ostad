@@ -1,8 +1,10 @@
+import 'package:counter_with_getx/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'getx_controller.dart';
 import 'home_screen.dart';
+import 'settings_screen.dart';
 
 class CounterApp extends StatelessWidget {
   const CounterApp({super.key});
@@ -12,6 +14,12 @@ class CounterApp extends StatelessWidget {
     return GetMaterialApp(
       home: const HomeScreen(),
       initialBinding: ControllerBinder(),
+      initialRoute: "/",
+      routes: {
+        HomeScreen.name :(context)=>const HomeScreen(),
+        SettingsScreen.name :(context)=>const SettingsScreen(),
+        ProfileScreen.name :(context)=>const ProfileScreen(),
+      },
     );
   }
 }
