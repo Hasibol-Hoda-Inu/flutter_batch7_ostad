@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/presentation/screens/onboarding_screens/pin_verification_screen.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_up_screen.dart';
 import 'package:task_manager/presentation/utils/app_colors.dart';
 
+import '../presentation/screens/main_bottom_nav_screen.dart';
 import '../presentation/screens/splash_screen.dart';
+import 'controller_binder.dart';
 
 class TaskManager extends StatelessWidget {
   const TaskManager({super.key});
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      initialBinding: ControllerBinder(),
+      initialRoute: "/",
+      routes: {
+        SplashScreen.name : (context)=> const SplashScreen(),
+        MainBottomNavScreen.name : (context)=> const MainBottomNavScreen(),
+        LoginScreen.name : (context)=> const LoginScreen(),
+        SignUpScreen.name : (context)=> const SignUpScreen(),
+      },
+
       theme: ThemeData(
         colorSchemeSeed: AppColors.primaryColor,
         textTheme: const TextTheme(),

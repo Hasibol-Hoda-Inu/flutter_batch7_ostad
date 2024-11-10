@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TMAppBar(isOnProfileScreen: true),
+      appBar: const TMAppBar(isOnProfileScreen: true,),
       body: ScreenBackground(
         child:
         SingleChildScrollView(
@@ -87,9 +87,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {});
     Map<String, dynamic> reqBody ={
       "email":_emailTEController.text,
-      "firstName":AuthController.userData!.firstName!.trim(),
-      "lastName":AuthController.userData!.lastName!.trim(),
-      "mobile":AuthController.userData!.mobile!.trim(),
+      "firstName": _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim(),
+      "mobile": _mobileTEController.text.trim(),
     };
     if(_passwordTEController.text.isNotEmpty){
       reqBody["password"] = _passwordTEController.text;
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.updateProfile,
+      url: Urls.updateProfile,
       body: reqBody,
     );
 
@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       showSnackBarMessage(context, "Profile has been updated");
     }else{
       debugPrint("there is the issue");
-      showSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage!, true);
     }
   }
 

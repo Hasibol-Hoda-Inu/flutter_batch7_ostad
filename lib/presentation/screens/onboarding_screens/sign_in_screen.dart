@@ -2,22 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/login_model.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/presentation/controllers/auth_controller.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/presentation/controllers/sign_in_controller.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/utils/app_colors.dart';
 import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager/presentation/widgets/screen_background.dart';
 
-import '../../../data/utils/urls.dart';
 import '../../utils/snackbar.dart';
 import 'email_verification_screen.dart';
 import 'sign_up_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const name = "/loginScreen";
   const LoginScreen({super.key});
 
   @override
@@ -29,8 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-
-  bool _inProgress = false;
+  final SignInController signInController = Get.find<SignInController>();
 
   @override
   Widget build(BuildContext context) {
@@ -101,16 +97,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20,),
                   SizedBox(
                     width: double.infinity,
-                    child: Visibility(
-                      visible: !_inProgress,
-                      replacement: const CenterCircularProgressIndicator(),
-                      child: ElevatedButton(
-                          onPressed: _onTabNextButton,
-                          child: const Icon(Icons.arrow_circle_right_outlined,
-                              color: Colors.white,
-                              size: 26,
-                          )
-                      ),
+                    child: GetBuilder<SignInController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: !controller.inProgress,
+                          replacement: const CenterCircularProgressIndicator(),
+                          child: ElevatedButton(
+                              onPressed: _onTabNextButton,
+                              child: const Icon(Icons.arrow_circle_right_outlined,
+                                  color: Colors.white,
+                                  size: 26,
+                              )
+                          ),
+                        );
+                      }
                     ),
                   ),
                 ],),
@@ -124,30 +124,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signIn()async {
-    _inProgress = true;
-    setState(() {});
-
-    Map<String, dynamic> reqBody = {
-      "email": _emailTEController.text.trim(),
-      "password": _passwordTEController.text,
-    };
-    final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.signInUrl,
-        body: reqBody,
+    final bool result = await signInController.signIn(
+        _emailTEController.text.trim(),
+        _passwordTEController.text,
     );
-
-    _inProgress = false;
-    setState(() {});
-    if(response.isSuccess){
-      final LoginModel loginModel = LoginModel.fromJson(response.responseData);
-      await AuthController.saveAccessToken(loginModel.token!);
-      await AuthController.saveUserData(loginModel.data!);
-
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (BuildContext context)=>const MainBottomNavScreen()),
-              (value)=>false);
+    if(result){
+      Navigator.pushNamedAndRemoveUntil(context, MainBottomNavScreen.name, (predicate)=>false);
     }else{
-      showSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, signInController.errorMessage!, true);
     }
   }
 

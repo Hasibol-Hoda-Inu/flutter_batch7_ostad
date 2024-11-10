@@ -86,9 +86,11 @@ class NetworkCaller{
              errorMessage: "Please login to continue",
          );
       }else {
+        final decodedData = jsonDecode(response.body);
         return NetworkResponse(
             isSuccess: false,
             statusCode: response.statusCode,
+            errorMessage: decodedData["data"],
         );
       }
     }catch(e){

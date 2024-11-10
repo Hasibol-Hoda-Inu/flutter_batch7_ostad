@@ -8,6 +8,7 @@ import '../widgets/tm_app_bar_widget.dart';
 import 'task_screens/new_task_screen.dart';
 
 class MainBottomNavScreen extends StatefulWidget {
+  static const String name = "/mainBottomNavScreen";
   const MainBottomNavScreen({super.key});
 
   @override
@@ -17,10 +18,10 @@ class MainBottomNavScreen extends StatefulWidget {
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   int _selectedIndex = 0;
   final List<Widget> _screens = [
-    NewTaskScreen(),
-    CompletedTaskScreen(),
-    CancelledTaskScreen(),
-    ProgressTaskScreen(),
+    const NewTaskScreen(),
+    const CompletedTaskScreen(),
+    const CancelledTaskScreen(),
+    const ProgressTaskScreen(),
   ];
   @override
   Widget build(BuildContext context) {

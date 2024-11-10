@@ -127,7 +127,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       clearForm();
       showSnackBarMessage(context, "New task added successfully");
     }else{
-      showSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage!, true);
     }
   }
 

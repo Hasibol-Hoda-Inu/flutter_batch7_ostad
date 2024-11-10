@@ -1,15 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/data/utils/urls.dart';
-import 'package:task_manager/presentation/screens/onboarding_screens/pin_verification_screen.dart';
-import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
-import 'package:task_manager/presentation/utils/snackbar.dart';
-import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
-import 'package:task_manager/presentation/widgets/screen_background.dart';
+import 'package:get/get.dart';
 
+import '../../controllers/recover_verify_email_controller.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/snackbar.dart';
+import '../../widgets/center_circular_progress_indicator.dart';
+import '../../widgets/screen_background.dart';
+import 'pin_verification_screen.dart';
+import 'sign_in_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -20,7 +19,8 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   TextEditingController _emailTEController = TextEditingController();
-  bool inProgress = false;
+  RecoverVerifyEmailController rVEController = Get.find<RecoverVerifyEmailController>();
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -59,19 +59,24 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     ),
                 ),
                 controller: _emailTEController,
+                keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 20,),
               SizedBox(
                 width: double.infinity,
-                child: Visibility(
-                  visible: !inProgress,
-                  replacement: const CenterCircularProgressIndicator(),
-                  child: ElevatedButton(
-                      onPressed: _getRecoverVerifyEmail,
-                      child: const Icon(Icons.arrow_circle_right_outlined,
-                          color: Colors.white,
-                          size: 26)
-                  ),
+                child: GetBuilder<RecoverVerifyEmailController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: !controller.inProgress,
+                      replacement: const CenterCircularProgressIndicator(),
+                      child: ElevatedButton(
+                          onPressed: _getRecoverVerifyEmail,
+                          child: const Icon(Icons.arrow_circle_right_outlined,
+                              color: Colors.white,
+                              size: 26)
+                      ),
+                    );
+                  }
                 ),
               ),
               const SizedBox(height: 60,),
@@ -86,19 +91,13 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   Future<void> _getRecoverVerifyEmail()async {
-    inProgress = true;
-    setState(() {});
-    String email = _emailTEController.text.trim();
-    NetworkResponse response = await NetworkCaller.getRequest(url: Urls.verifyEmail(email));
-    if(response.isSuccess){
+    final bool result = await rVEController.getRecoverVerifyEmail(_emailTEController.text.trim());
+    if(result){
       showSnackBarMessage(context, "A pin has been sent");
       _onTabNextButton();
-      debugPrint("${response.statusCode}");
     }else{
-      showSnackBarMessage(context, response.errorMessage);
+      showSnackBarMessage(context, rVEController.errorMessage!);
     }
-    inProgress = false;
-    setState(() {});
   }
 
   Widget _signInSectionMethod() {
@@ -123,6 +122,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     );
   }
   void _onTapNextScreen(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
+    Navigator.pushNamed(context, LoginScreen.name);
+  }
+
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    super.dispose();
   }
 }

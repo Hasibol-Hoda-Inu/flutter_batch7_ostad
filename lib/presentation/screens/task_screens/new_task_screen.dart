@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/models/task_list_model.dart';
-import 'package:task_manager/data/services/network_caller.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/presentation/controllers/new_task_list_controller.dart';
+import 'package:task_manager/presentation/controllers/task_status_controller.dart';
 import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 
-import '../../../data/models/summery_count_model.dart';
-import '../../../data/models/task_model.dart';
-import '../../../data/models/task_summery_data_model.dart';
-import '../../../data/utils/urls.dart';
 import '../../utils/snackbar.dart';
 import '../../widgets/task_card.dart';
 import '../../widgets/task_summery_widget.dart';
@@ -21,10 +17,9 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
-  
-  bool _getNewTaskListInProgress = false;
-  List<TaskModel> _newTaskList = [];
-  List<SummeryData> _taskStatusList = [];
+
+  final NewTaskListController newTLController = Get.find<NewTaskListController>();
+  final TaskStatusController tSController = Get.find<TaskStatusController>();
 
   @override
   void initState() {
@@ -48,22 +43,26 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             children: [
               _buildTaskSummeryMethod(),
               const SizedBox(height: 24,),
-              Expanded(child:
-              Visibility(
-                visible: !_getNewTaskListInProgress,
-                replacement: const CenterCircularProgressIndicator(),
-                child: ListView.separated(
-                    itemBuilder: (BuildContext context, index)=>TaskCard(
-                      textTheme: textTheme,
-                      taskList: _newTaskList[index],
-                      onRefreshList: () {
-                        _getNewTaskList();
-                        _getTaskStatus();
-                    },
+              Expanded(
+                child: GetBuilder<NewTaskListController>(
+                builder: (controller) {
+                  return Visibility(
+                    visible: !controller.inProgress,
+                    replacement: const CenterCircularProgressIndicator(),
+                    child: ListView.separated(
+                        itemBuilder: (BuildContext context, index)=>TaskCard(
+                          textTheme: textTheme,
+                          taskList: controller.taskList[index],
+                          onRefreshList: () {
+                            _getNewTaskList();
+                            _getTaskStatus();
+                        },
+                        ),
+                        separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
+                        itemCount: controller.taskList.length
                     ),
-                    separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
-                    itemCount: _newTaskList.length
-                ),
+                  );
+                }
               ),)
             ],
           ),
@@ -84,50 +83,38 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   Future<void>_getNewTaskList()async {
-    _newTaskList.clear();
-    _getNewTaskListInProgress = true;
-    setState(() {});
-    final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.newTaskUrl);
-    if(response.isSuccess){
-      final TaskListModel taskListModel = TaskListModel.fromJson(response.responseData!);
-      _newTaskList = taskListModel.taskList!;
-    }else{
-      showSnackBarMessage(context, response.errorMessage, true);
+    final bool result = await newTLController.getNewTaskList();
+    if(result==false){
+      showSnackBarMessage(context, newTLController.errorMessage!, true);
     }
-    _getNewTaskListInProgress = false;
-    setState(() {});
   }
 
   Widget _buildTaskSummeryMethod() {
     return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Visibility(
-                visible: !_getNewTaskListInProgress,
-                replacement: const CenterCircularProgressIndicator(),
-                child: Row(
-                  children: _getTaskSummeryWidget(),
-                )
+            child: GetBuilder<NewTaskListController>(
+              builder: (controller) {
+                return Visibility(
+                    visible: !controller.inProgress,
+                    replacement: const CenterCircularProgressIndicator(),
+                    child: Row(
+                      children: _getTaskSummeryWidget(),
+                    )
+                );
+              }
             ),
           );
   }
 
   List<TaskSummeryContainer>_getTaskSummeryWidget(){
-    return _taskStatusList.map((t)=>TaskSummeryContainer(title: t.sId!, count: t.sum ?? 0)).toList();
+    return tSController.summeryList.map((t)=>TaskSummeryContainer(title: t.sId!, count: t.sum ?? 0)).toList();
   }
 
   Future<void>_getTaskStatus()async {
-    _taskStatusList.clear();
-    _getNewTaskListInProgress = true;
-    setState(() {});
-    final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.taskStatusUrl);
-    if(response.isSuccess){
-      final SummeryCountModel summeryCountModel = SummeryCountModel.fromJson(response.responseData!);
-      _taskStatusList = summeryCountModel.summeryList ?? [];
-    }else{
-      showSnackBarMessage(context, response.errorMessage, true);
+    final bool result = await tSController.getTaskStatus();
+    if(result==false){
+      showSnackBarMessage(context, tSController.errorMessage!, true);
     }
-    _getNewTaskListInProgress = false;
-    setState(() {});
   }
 
 }

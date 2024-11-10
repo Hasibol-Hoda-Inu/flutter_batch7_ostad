@@ -107,7 +107,7 @@ class _TaskCardState extends State<TaskCard> {
     }else{
       _changeStatusInProgress = false;
       setState(() {});
-      showSnackBarMessage(context, response.errorMessage);
+      showSnackBarMessage(context, response.errorMessage!);
     }
   }
 
@@ -137,7 +137,7 @@ class _TaskCardState extends State<TaskCard> {
       widget.onRefreshList();
       showSnackBarMessage(context, "Successfully deleted", false);
     }else{
-      showSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage!, true);
     }
     setState(() {});
   }

@@ -1,16 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/presentation/utils/snackbar.dart';
-import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
-import 'package:task_manager/presentation/widgets/screen_background.dart';
+import 'package:get/get.dart';
 
-import '../../../data/utils/urls.dart';
+import '../../controllers/recover_reset_password_controller.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/snackbar.dart';
+import '../../widgets/center_circular_progress_indicator.dart';
+import '../../widgets/screen_background.dart';
 import 'sign_in_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
+  static const name = "/resetPasswordScreen";
   const ResetPasswordScreen({
     super.key,
     required this.email,
@@ -25,8 +25,12 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  bool inProgress = false;
   TextEditingController _passwordTEController = TextEditingController();
+  TextEditingController _resetPTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  RecoverResetPasswordController rRPController = Get.find<RecoverResetPasswordController>();
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -53,77 +57,80 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Widget _resetPasswordFormMethod() {
-    return Column(
-      children: [
-        const SizedBox(height: 20,),
-        TextFormField(
-          decoration: const InputDecoration(
-                            hintText: "Password",
-                            hintStyle: TextStyle(
-                                color: Colors.grey
-                            )
-                        ),
-          controller: _passwordTEController,
-        ),
-        const SizedBox(height: 20,),
-        TextFormField(
-                        decoration: const InputDecoration(
-                            hintText: "Confirm password",
-                            hintStyle: TextStyle(
-                                color: Colors.grey
-                            )
-                        ),
-                      ),
-        const SizedBox(height: 20,),
-        SizedBox(
-          width: double.infinity,
-          child: Visibility(
-            visible: !inProgress,
-            replacement: const CenterCircularProgressIndicator(),
-            child: ElevatedButton(
-                onPressed: _getRecoverResetPassword,
-                child: const Icon(Icons.arrow_circle_right_outlined,
-                    color: Colors.white,
-                    size: 26)
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          const SizedBox(height: 20,),
+          TextFormField(
+            decoration: const InputDecoration(
+                hintText: "New Password",
+                hintStyle: TextStyle(
+                    color: Colors.grey
+                )
+            ),
+            controller: _passwordTEController,
+            validator: (value)=>value!.length<8?"Password must be 8 characters long": null,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            obscureText: true,
+          ),
+          const SizedBox(height: 20,),
+          TextFormField(
+            validator: (value)=>value!=_passwordTEController.text?"Enter same password":null,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            obscureText: true,
+            controller: _resetPTEController,
+            decoration: const InputDecoration(
+                hintText: "Confirm password",
+                hintStyle: TextStyle(
+                    color: Colors.grey
+                )
             ),
           ),
-        ),
-        const SizedBox(height: 60,),
-      ],
+          const SizedBox(height: 20,),
+          SizedBox(
+            width: double.infinity,
+            child: GetBuilder<RecoverResetPasswordController>(
+              builder: (controller) {
+                return Visibility(
+                  visible: !controller.inProgress,
+                  replacement: const CenterCircularProgressIndicator(),
+                  child: ElevatedButton(
+                      onPressed: _onTapNavigateToNextScreen,
+                      child: const Icon(Icons.arrow_circle_right_outlined,
+                          color: Colors.white,
+                          size: 26,
+                      )
+                  ),
+                );
+              }
+            ),
+          ),
+          const SizedBox(height: 60,),
+        ],
+      ),
     );
   }
 
+  void _onTapNavigateToNextScreen(){
+    if(!_formKey.currentState!.validate()){
+      return;
+    }
+    _getRecoverResetPassword();
+  }
 
   Future<void> _getRecoverResetPassword()async {
-    inProgress = true;
-    setState(() {});
+    final bool result = await rRPController.getRecoverResetPassword(widget.email, widget.OTP, _passwordTEController.text);
 
-    Map<String, dynamic> reqBody = {
-      "email": widget.email,
-      "OTP": widget.OTP,
-      "password": _passwordTEController.text,
-    };
-
-    final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.resetPassword,
-        body: reqBody,
-    );
-    inProgress = false;
-    setState(() {});
-
-    if(response.isSuccess){
-      showSnackBarMessage(context, "Login with your new password");
+    if(result){
+      showSnackBarMessage(context, rRPController.successMessage!);
       _onTapLoginScreen();
     }else{
-      showSnackBarMessage(context, response.errorMessage);
+      showSnackBarMessage(context, rRPController.errorMessage!);
     }
   }
-
-
   void _onTapLoginScreen(){
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (BuildContext context)=>const LoginScreen()),
-            (value)=>false);
+    Navigator.pushNamedAndRemoveUntil(context, LoginScreen.name, (predicate)=>false);
   }
 
   Widget _signInSection() {
@@ -148,6 +155,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
   void _onTapNavigateToSignInScreen(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
+    Navigator.pushNamed(context, LoginScreen.name);
+  }
+
+  @override
+  void dispose() {
+    _passwordTEController.dispose();
+    _resetPTEController.dispose();
+    super.dispose();
   }
 }

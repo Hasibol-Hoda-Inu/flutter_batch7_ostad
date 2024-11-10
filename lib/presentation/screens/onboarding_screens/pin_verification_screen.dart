@@ -1,13 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 
-import '../../../data/utils/urls.dart';
+import '../../controllers/recovery_verify_otp_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/snackbar.dart';
+import '../../widgets/center_circular_progress_indicator.dart';
 import '../../widgets/screen_background.dart';
 import 'reset_password_screen.dart';
 import 'sign_in_screen.dart';
@@ -26,7 +25,8 @@ class PinVerificationScreen extends StatefulWidget {
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   TextEditingController _pinTEController = TextEditingController();
-  bool inProgress = false;
+  RecoveryVerifyOtpController rVOtpController = Get.find<RecoveryVerifyOtpController>();
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -80,17 +80,22 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
               const SizedBox(height: 20,),
               SizedBox(
                 width: double.infinity,
-                child: Visibility(
-                  visible: !inProgress,
-                  replacement: const CenterCircularProgressIndicator(),
-                  child: ElevatedButton(
-                      onPressed: _getRecoverVerifyOTP,
-                      child: const Text("Verify", style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600
-                      ),)
-                  ),
+                child: GetBuilder<RecoveryVerifyOtpController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: !controller.inProgress,
+                      replacement: const CenterCircularProgressIndicator(),
+                      child: ElevatedButton(
+                          onPressed: _getRecoverVerifyOTP,
+                          child: const Text("Verify", style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600
+                          ),
+                          )
+                      ),
+                    );
+                  }
                 ),
               ),
               const SizedBox(height: 60,),
@@ -106,20 +111,14 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   Future<void> _getRecoverVerifyOTP()async {
-    inProgress = true;
-    setState(() {});
+    final bool result = await rVOtpController.getRecoverVerifyOTP(_pinTEController.text, widget.email);
 
-    String otp = _pinTEController.text;
-    String email = widget.email;
-    NetworkResponse response = await NetworkCaller.getRequest(url: Urls.verifyOTP(email, otp));
-    if(response.isSuccess){
+    if(result){
       _onTapNavigateToBNS();
-      showSnackBarMessage(context, "Set your new password");
+      showSnackBarMessage(context, rVOtpController.successMessage!);
     }else{
-      showSnackBarMessage(context, response.errorMessage);
+      showSnackBarMessage(context, rVOtpController.errorMessage!);
     }
-    inProgress = false;
-    setState(() {});
   }
 
   Widget _signInSectionMethod() {
@@ -144,6 +143,6 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     );
   }
   void _onTapNextScreen(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
+    Navigator.pushNamed(context, LoginScreen.name);
   }
 }

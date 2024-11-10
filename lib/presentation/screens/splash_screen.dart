@@ -7,6 +7,7 @@ import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_scr
 import '../widgets/screen_background.dart';
 
 class SplashScreen extends StatefulWidget {
+  static const String name = "/";
   const SplashScreen({super.key});
 
   @override
