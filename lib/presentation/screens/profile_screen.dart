@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/user_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/presentation/controllers/auth_controller.dart';
+import 'package:task_manager/presentation/controllers/update_profile_controller.dart';
 import 'package:task_manager/presentation/utils/snackbar.dart';
 import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 
@@ -27,8 +29,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _mobileTEController = TextEditingController();
   TextEditingController _passwordTEController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  XFile? _pickedImage;
-  bool _updateProfileInProgress = false;
+  UpdateProfileController uPController = Get.find<UpdateProfileController>();
+  // XFile? _pickedImage;
+  // bool _updateProfileInProgress = false;
 
   @override
   void initState() {
@@ -63,16 +66,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildPhotoPicker(),
                 const SizedBox(height: 12,),
                 buildProfileFormMethod(),
-                Visibility(
-                  visible: !_updateProfileInProgress,
-                  replacement: const CenterCircularProgressIndicator(),
-                  child: ElevatedButton(
-                      onPressed: (){
-                        if(_formKey.currentState!.validate()){
-                          _postUpdateProfile();
-                        }
-                      },
-                      child: const Icon(Icons.arrow_circle_right_outlined, color: Colors.white,)),
+                GetBuilder<UpdateProfileController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: !controller.inProgress,
+                      replacement: const CenterCircularProgressIndicator(),
+                      child: ElevatedButton(
+                          onPressed: (){
+                            if(_formKey.currentState!.validate()){
+                              _postUpdateProfile();
+                            }
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined, color: Colors.white,)),
+                    );
+                  }
                 )
               ],
             ),
@@ -83,37 +90,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _postUpdateProfile()async {
-    _updateProfileInProgress = true;
-    setState(() {});
-    Map<String, dynamic> reqBody ={
-      "email":_emailTEController.text,
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim(),
-    };
-    if(_passwordTEController.text.isNotEmpty){
-      reqBody["password"] = _passwordTEController.text;
-    }
-    if(_pickedImage != null){
-      List<int> imageBytes = await _pickedImage!.readAsBytes();
-      String convertedImage = base64Encode(imageBytes);
-      reqBody["photo"] = convertedImage;
-    }
-
-    final NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.updateProfile,
-      body: reqBody,
+    final bool result = await uPController.postUpdateProfile(
+        _emailTEController.text.trim(),
+        _firstNameTEController.text.trim(),
+        _lastNameTEController.text.trim(),
+        _mobileTEController.text.trim(),
+        _passwordTEController.text,
     );
+    // _updateProfileInProgress = true;
+    // setState(() {});
 
-    _updateProfileInProgress = false;
-    setState(() {});
-    if(response.isSuccess){
-      UserModel userModel = UserModel.fromJson(response.responseData);
-      AuthController.saveUserData(userModel);
+    // Map<String, dynamic> reqBody ={
+    //   "email":_emailTEController.text,
+    //   "firstName": _firstNameTEController.text.trim(),
+    //   "lastName": _lastNameTEController.text.trim(),
+    //   "mobile": _mobileTEController.text.trim(),
+    // };
+    // if(_passwordTEController.text.isNotEmpty){
+    //   reqBody["password"] = _passwordTEController.text;
+    // }
+    // if(_pickedImage != null){
+    //   List<int> imageBytes = await _pickedImage!.readAsBytes();
+    //   String convertedImage = base64Encode(imageBytes);
+    //   reqBody["photo"] = convertedImage;
+    // }
+    //
+    // final NetworkResponse response = await NetworkCaller.postRequest(
+    //   url: Urls.updateProfile,
+    //   body: reqBody,
+    // );
+
+    // _updateProfileInProgress = false;
+    // setState(() {});
+    if(result){
+      // UserModel userModel = UserModel.fromJson(response.responseData);
+      // AuthController.saveUserData(userModel);
       showSnackBarMessage(context, "Profile has been updated");
     }else{
       debugPrint("there is the issue");
-      showSnackBarMessage(context, response.errorMessage!, true);
+      showSnackBarMessage(context, uPController.errorMessage!, true);
     }
   }
 
@@ -218,16 +233,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   String _getSelectedImageTitle(){
-    if(_pickedImage !=null){
-      return _pickedImage!.name;
+    if(uPController.pickedImage !=null){
+      return uPController.pickedImage!.name;
     }
     return "Select an image";
   }
+
   Future<void> _imagePicker()async {
     ImagePicker imagePicker = ImagePicker();
     final XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
     if(image!=null){
-      _pickedImage = image;
+      // _pickedImage = image;
+      uPController.pickedImage = image;
       setState(() {});
     }
   }

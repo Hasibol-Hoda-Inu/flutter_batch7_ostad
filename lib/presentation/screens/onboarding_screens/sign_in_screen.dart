@@ -82,8 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       if(value?.isEmpty ?? true){
                         return "Enter your password";
                       }
-                      if(value!.length <=6){
-                        return "Enter a password more than 6 characters";
+                      if(value!.length <8){
+                        return "Enter a password more than 8 characters";
                       }
                       return null;
                     },

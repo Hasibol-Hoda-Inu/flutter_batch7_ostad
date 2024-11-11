@@ -10,6 +10,7 @@ import '../presentation/controllers/recovery_verify_otp_controller.dart';
 import '../presentation/controllers/sign_in_controller.dart';
 import '../presentation/controllers/sign_up_controller.dart';
 import '../presentation/controllers/task_status_controller.dart';
+import '../presentation/controllers/update_profile_controller.dart';
 
 class ControllerBinder extends Bindings{
   @override
@@ -24,6 +25,7 @@ class ControllerBinder extends Bindings{
     Get.put(RecoverResetPasswordController());
     Get.put(RecoveryVerifyOtpController());
     Get.put(RecoverVerifyEmailController());
+    Get.put(UpdateProfileController());
   }
   
 }

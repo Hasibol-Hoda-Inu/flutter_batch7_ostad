@@ -20,6 +20,7 @@ class EmailVerificationScreen extends StatefulWidget {
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   TextEditingController _emailTEController = TextEditingController();
   RecoverVerifyEmailController rVEController = Get.find<RecoverVerifyEmailController>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +50,28 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
 
   Column _emailVerificationForm() {
-    return Column(children: [
-              const SizedBox(height: 20,),
-              TextFormField(
-                decoration: const InputDecoration(
-                    hintText: "Email",
-                    hintStyle: TextStyle(
-                        color: Colors.grey
-                    ),
-                ),
-                controller: _emailTEController,
-                keyboardType: TextInputType.emailAddress,
+    return Column(
+      children: [
+        const SizedBox(height: 20,),
+        Form(
+          key: _formKey,
+          child: TextFormField(
+            decoration: const InputDecoration(
+              hintText: "Email",
+              hintStyle: TextStyle(
+                  color: Colors.grey
               ),
+            ),
+            controller: _emailTEController,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (String? value){
+              if(value?.isEmpty?? true){
+                return "Enter your email address";
+              }return null;
+            },
+            keyboardType: TextInputType.emailAddress,
+          ),
+        ),
               const SizedBox(height: 20,),
               SizedBox(
                 width: double.infinity,
@@ -80,14 +91,13 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 ),
               ),
               const SizedBox(height: 60,),
-            ],);
+            ],
+    );
   }
 
   void _onTabNextButton(){
     String email = _emailTEController.text.trim();
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (BuildContext context)=> PinVerificationScreen(email: email,)),
-            (value)=>false);
+    Navigator.pushNamedAndRemoveUntil(context, PinVerificationScreen.name, (predicate)=> false, arguments: {"email": email});
   }
 
   Future<void> _getRecoverVerifyEmail()async {

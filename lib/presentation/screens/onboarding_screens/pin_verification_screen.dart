@@ -12,12 +12,10 @@ import 'reset_password_screen.dart';
 import 'sign_in_screen.dart';
 
 class PinVerificationScreen extends StatefulWidget {
+  static const String name = "/pinVerificationScreen";
   const PinVerificationScreen({
     super.key,
-    required this.email,
   });
-
-  final String email;
 
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
@@ -26,6 +24,16 @@ class PinVerificationScreen extends StatefulWidget {
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   TextEditingController _pinTEController = TextEditingController();
   RecoveryVerifyOtpController rVOtpController = Get.find<RecoveryVerifyOtpController>();
+  GlobalKey<FormState>_formKey = GlobalKey<FormState>();
+
+  String? email;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    email = args?["email"] ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,26 +54,30 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                 style: textTheme.bodyLarge?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 20,),
-              PinCodeTextField(
-                controller: _pinTEController,
-                length: 6,
-                obscureText: false,
-                keyboardType: TextInputType.number,
-                animationType: AnimationType.fade,
-                pinTheme: PinTheme(
-                  shape: PinCodeFieldShape.box,
-                  borderRadius: BorderRadius.circular(5),
-                  fieldHeight: 50,
-                  fieldWidth: 40,
-                  activeFillColor: Colors.white,
-                  inactiveFillColor: Colors.white,
-                  inactiveColor: Colors.transparent,
+              Form(
+                key: _formKey,
+                child: PinCodeTextField(
+                  controller: _pinTEController,
+                  validator: (value)=> value!.length<5 ? "Enter your pin" : null,
+                  length: 6,
+                  obscureText: false,
+                  keyboardType: TextInputType.number,
+                  animationType: AnimationType.fade,
+                  pinTheme: PinTheme(
+                    shape: PinCodeFieldShape.box,
+                    borderRadius: BorderRadius.circular(5),
+                    fieldHeight: 50,
+                    fieldWidth: 40,
+                    activeFillColor: Colors.white,
+                    inactiveFillColor: Colors.white,
+                    inactiveColor: Colors.transparent,
 
+                  ),
+                  animationDuration: const Duration(milliseconds: 300),
+                  backgroundColor: Colors.transparent,
+                  enableActiveFill: true,
+                  appContext: context,
                 ),
-                animationDuration: const Duration(milliseconds: 300),
-                backgroundColor: Colors.transparent,
-                enableActiveFill: true,
-                appContext: context,
               ),
               _buildOnTapSubmissionMethod(),
               _signInSectionMethod()
@@ -86,7 +98,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       visible: !controller.inProgress,
                       replacement: const CenterCircularProgressIndicator(),
                       child: ElevatedButton(
-                          onPressed: _getRecoverVerifyOTP,
+                          onPressed: _onTapNavigateToBNS,
                           child: const Text("Verify", style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -103,21 +115,22 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   void _onTapNavigateToBNS(){
-    String otp = _pinTEController.text;
-    String email = widget.email;
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (BuildContext context)=> ResetPasswordScreen(email: email, OTP: otp,)),
-            (value)=>false);
+    if(!_formKey.currentState!.validate()){
+      return;
+    }
+      _getRecoverVerifyOTP();
   }
 
   Future<void> _getRecoverVerifyOTP()async {
-    final bool result = await rVOtpController.getRecoverVerifyOTP(_pinTEController.text, widget.email);
+    final bool result = await rVOtpController.getRecoverVerifyOTP(_pinTEController.text, email!);
 
     if(result){
-      _onTapNavigateToBNS();
-      showSnackBarMessage(context, rVOtpController.successMessage!);
+      showSnackBarMessage(context, rVOtpController.successMessage!, false);
+      Navigator.pushNamedAndRemoveUntil(context, ResetPasswordScreen.name, (predicate)=>false,
+        arguments: {"email":email!, "OTP":_pinTEController.text,},
+      );
     }else{
-      showSnackBarMessage(context, rVOtpController.errorMessage!);
+      showSnackBarMessage(context, rVOtpController.errorMessage ?? "Something went wrong, please try again.", true);
     }
   }
 
@@ -145,4 +158,5 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   void _onTapNextScreen(){
     Navigator.pushNamed(context, LoginScreen.name);
   }
+
 }

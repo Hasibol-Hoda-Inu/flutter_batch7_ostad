@@ -13,12 +13,7 @@ class ResetPasswordScreen extends StatefulWidget {
   static const name = "/resetPasswordScreen";
   const ResetPasswordScreen({
     super.key,
-    required this.email,
-    required this.OTP
   });
-
-  final String email;
-  final String OTP;
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -28,9 +23,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   TextEditingController _passwordTEController = TextEditingController();
   TextEditingController _resetPTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   RecoverResetPasswordController rRPController = Get.find<RecoverResetPasswordController>();
 
+  String? email;
+  String? oTP;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    email = args["email"]??"";
+    oTP = args["OTP"]??"";
+  }
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -120,13 +124,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Future<void> _getRecoverResetPassword()async {
-    final bool result = await rRPController.getRecoverResetPassword(widget.email, widget.OTP, _passwordTEController.text);
+    final bool result = await rRPController.getRecoverResetPassword(email!, oTP!, _passwordTEController.text);
 
     if(result){
-      showSnackBarMessage(context, rRPController.successMessage!);
+      showSnackBarMessage(context, rRPController.successMessage!, false);
       _onTapLoginScreen();
     }else{
-      showSnackBarMessage(context, rRPController.errorMessage!);
+      showSnackBarMessage(context, rRPController.errorMessage!, true);
     }
   }
   void _onTapLoginScreen(){
