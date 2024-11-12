@@ -37,10 +37,21 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
           });
         },
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "New Task",),
-          NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "Completed"),
-          NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "Cancelled"),
-          NavigationDestination(icon: Icon(Icons.file_copy_rounded), label: "Progress"),
+          NavigationDestination(icon: Icon(Icons.file_copy_outlined),
+            label: "New Task",
+            selectedIcon: Icon(Icons.file_copy_rounded, color: Colors.white,),
+          ),
+          NavigationDestination(icon: Icon(Icons.file_copy_outlined),
+            label: "Completed",
+            selectedIcon: Icon(Icons.file_copy_rounded, color: Colors.white,),
+          ),
+          NavigationDestination(icon: Icon(Icons.file_copy_outlined),
+            label: "Cancelled",
+            selectedIcon: Icon(Icons.file_copy_rounded, color: Colors.white,),),
+          NavigationDestination(icon: Icon(Icons.file_copy_outlined),
+            label: "Progress", selectedIcon:
+            Icon(Icons.file_copy_rounded),
+          ),
         ],
       ),
     );

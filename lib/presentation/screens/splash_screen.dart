@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_manager/presentation/controllers/auth_controller.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
+import 'package:task_manager/presentation/utils/assets.dart';
 
 import '../widgets/screen_background.dart';
 
@@ -27,9 +28,11 @@ class _SplashScreenState extends State<SplashScreen> {
    await AuthController.getAccessToken();
    if(AuthController.isLoggedIn()){
      await AuthController.getUserData();
-     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const MainBottomNavScreen()));
+     Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
+     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const MainBottomNavScreen()));
    }else{
-     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
+     Navigator.pushReplacementNamed(context, LoginScreen.name);
+     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
    }
   }
 
@@ -38,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: ScreenBackground(
         child: Center(
-        child: SvgPicture.asset("assets/images/logo.svg", alignment: Alignment.center,),
+        child: SvgPicture.asset(AssetsPath.logoImagePath, alignment: Alignment.center,),
       ),),
     );
   }
