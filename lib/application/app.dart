@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/pin_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_up_screen.dart';
+import 'package:task_manager/presentation/screens/task_screens/add_new_task_screen.dart';
 import 'package:task_manager/presentation/utils/app_colors.dart';
 
 import '../presentation/screens/main_bottom_nav_screen.dart';
@@ -27,6 +28,7 @@ class TaskManager extends StatelessWidget {
         SignUpScreen.name : (context)=> const SignUpScreen(),
         PinVerificationScreen.name : (context)=> const PinVerificationScreen(),
         ResetPasswordScreen.name : (context)=> const ResetPasswordScreen(),
+        AddNewTaskScreen.name : (context)=> const AddNewTaskScreen(),
       },
 
       theme: ThemeData(

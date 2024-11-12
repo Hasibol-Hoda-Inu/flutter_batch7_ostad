@@ -77,6 +77,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Future<void> _navigateToNewTaskScreen() async {
     final bool? shouldRefresh = await
     Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddNewTaskScreen()));
+
     if(shouldRefresh==true){
       _getNewTaskList();
     }

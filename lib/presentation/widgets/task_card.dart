@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:task_manager/presentation/controllers/change_status_controller.dart';
+import 'package:task_manager/presentation/controllers/delete_task_controller.dart';
 
-import '../../data/models/network_response.dart';
+
 import '../../data/models/task_model.dart';
-import '../../data/services/network_caller.dart';
-import '../../data/utils/urls.dart';
 import '../utils/snackbar.dart';
 
 class TaskCard extends StatefulWidget {
@@ -24,11 +26,17 @@ class TaskCard extends StatefulWidget {
 
 class _TaskCardState extends State<TaskCard> {
   String _selectedStatus = '';
-  bool _changeStatusInProgress = false;
+
+  DeleteTaskController deleteTController = Get.find<DeleteTaskController>();
+  ChangeStatusController changeSController = Get.find<ChangeStatusController>();
+
+  String formattedDate = '';
+
   @override
   void initState() {
     super.initState();
     _selectedStatus = widget.taskList.status!;
+    formatingDateTime();
   }
   @override
   Widget build(BuildContext context) {
@@ -49,7 +57,7 @@ class _TaskCardState extends State<TaskCard> {
             Text(widget.taskList.description ?? "",
               style: widget.textTheme.bodyLarge,),
             const SizedBox(height: 8,),
-            Text("Date: ${widget.taskList.createdDate}"),
+            Text("Date: $formattedDate"),
             const SizedBox(height: 8,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,6 +79,19 @@ class _TaskCardState extends State<TaskCard> {
         ),
       ),
     );
+  }
+
+  void formatingDateTime(){
+    if(widget.taskList.createdDate!=null){
+      DateTime? date = DateTime.tryParse(widget.taskList.createdDate!);
+      if(date!=null){
+        formattedDate = DateFormat("MM/dd/yyyy").format(date);
+      }else{
+        formattedDate = "Invalid Date";
+      }
+    }else{
+      formattedDate = "No data provided";
+    }
   }
 
   void _onTapEditButton(){
@@ -99,15 +120,12 @@ class _TaskCardState extends State<TaskCard> {
   }
 
   Future<void> _changeStatus(String newStatus)async {
-    _changeStatusInProgress = true;
-    setState(() {});
-    final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.changeStatus(widget.taskList.sId!, newStatus));
-    if(response.isSuccess){
+    final bool result = await changeSController.changeStatus(newStatus, widget.taskList.sId!);
+    if(result){
       widget.onRefreshList();
+      showSnackBarMessage(context, "Task status has updated", false);
     }else{
-      _changeStatusInProgress = false;
-      setState(() {});
-      showSnackBarMessage(context, response.errorMessage!);
+      showSnackBarMessage(context, changeSController.errorMessage!, true);
     }
   }
 
@@ -131,15 +149,14 @@ class _TaskCardState extends State<TaskCard> {
   }
 
   Future<void>_deleteTask()async {
-    String id = widget.taskList.sId ?? "";
-    final NetworkResponse response = await NetworkCaller.getRequest(url: Urls.deleteUrl+id);
-    if(response.isSuccess){
+    final bool result = await deleteTController.deleteTask(widget.taskList.sId ?? "");
+
+    if(result){
       widget.onRefreshList();
       showSnackBarMessage(context, "Successfully deleted", false);
     }else{
-      showSnackBarMessage(context, response.errorMessage!, true);
+      showSnackBarMessage(context, deleteTController.errorMessage!, true);
     }
-    setState(() {});
   }
 
   Widget _buildTaskStatusChip() => Chip(label: Text(widget.taskList.status ?? ""),);

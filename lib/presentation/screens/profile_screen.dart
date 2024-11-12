@@ -1,17 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/presentation/controllers/auth_controller.dart';
+import 'package:task_manager/presentation/controllers/image_picker_controller.dart';
 import 'package:task_manager/presentation/controllers/update_profile_controller.dart';
 import 'package:task_manager/presentation/utils/snackbar.dart';
 import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 
-import '../../data/utils/urls.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/tm_app_bar_widget.dart';
 
@@ -225,7 +219,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                     ),
                       const SizedBox(width: 12,),
-                      Text(_getSelectedImageTitle()),
+                      GetBuilder<ImagePickerController>(
+                        builder: (controller) {
+                          return Text(controller.pickedImage!= null? controller.pickedImage!.name : "Select an image");
+                        }
+                      ),
                     ],
                   ),
                 ),
@@ -240,14 +238,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _imagePicker()async {
-    ImagePicker imagePicker = ImagePicker();
-    final XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
-    if(image!=null){
-      // _pickedImage = image;
-      uPController.pickedImage = image;
-      setState(() {});
+    final bool result = await Get.find<ImagePickerController>().imagePicker();
+    if(result){
+      uPController.pickedImage = Get.find<ImagePickerController>().pickedImage;
+      debugPrint("I didn't get the image");
     }
   }
+  // Future<void> _imagePicker()async {
+  //   ImagePicker imagePicker = ImagePicker();
+  //   final XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+  //   if(image!=null){
+  //     // _pickedImage = image;
+  //     uPController.pickedImage = image;
+  //     setState(() {});
+  //   }
+  // }
 
   @override
   void dispose() {
