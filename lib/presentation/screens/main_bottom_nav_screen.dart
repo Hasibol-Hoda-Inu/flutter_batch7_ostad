@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/presentation/controllers/main_bottom_nav_contoller.dart';
 import 'package:task_manager/presentation/screens/task_screens/cancelled_task_screen.dart';
 import 'package:task_manager/presentation/screens/task_screens/completed_task_screen.dart';
 import 'package:task_manager/presentation/screens/task_screens/progress_task_screen.dart';
@@ -16,7 +18,9 @@ class MainBottomNavScreen extends StatefulWidget {
 }
 
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
-  int _selectedIndex = 0;
+  // int _selectedIndex = 0;
+  final MainBottomNavController mBNController = Get.find<MainBottomNavController>();
+
   final List<Widget> _screens = [
     const NewTaskScreen(),
     const CompletedTaskScreen(),
@@ -27,14 +31,12 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const TMAppBar(),
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: NavigationBar(
+      body: Obx(()=>_screens[mBNController.selectedIndex.value]),
+      bottomNavigationBar: Obx(()=> NavigationBar(
         indicatorColor: AppColors.primaryColor.withOpacity(0.7),
-        selectedIndex: _selectedIndex,
+        selectedIndex: mBNController.selectedIndex.value,
         onDestinationSelected: (int index){
-          setState(() {
-            _selectedIndex = index;
-          });
+          mBNController.selectedIndex.value = index;
         },
         destinations: const [
           NavigationDestination(icon: Icon(Icons.file_copy_outlined),
@@ -50,10 +52,10 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
             selectedIcon: Icon(Icons.file_copy_rounded, color: Colors.white,),),
           NavigationDestination(icon: Icon(Icons.file_copy_outlined),
             label: "Progress", selectedIcon:
-            Icon(Icons.file_copy_rounded),
+            Icon(Icons.file_copy_rounded, color: Colors.white,),
           ),
         ],
-      ),
+      )),
     );
   }
 }

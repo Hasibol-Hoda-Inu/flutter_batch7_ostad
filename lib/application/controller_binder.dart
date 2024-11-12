@@ -6,6 +6,7 @@ import '../presentation/controllers/change_status_controller.dart';
 import '../presentation/controllers/completed_task_list_controller.dart';
 import '../presentation/controllers/delete_task_controller.dart';
 import '../presentation/controllers/image_picker_controller.dart';
+import '../presentation/controllers/main_bottom_nav_contoller.dart';
 import '../presentation/controllers/new_task_list_controller.dart';
 import '../presentation/controllers/progress_task_list_controller.dart';
 import '../presentation/controllers/recover_reset_password_controller.dart';
@@ -34,6 +35,7 @@ class ControllerBinder extends Bindings{
     Get.put(AddNewTaskController());
     Get.put(DeleteTaskController());
     Get.put(ChangeStatusController());
+    Get.put(MainBottomNavController());
   }
   
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/presentation/controllers/cancelled_task_list_controller.dart';
+import 'package:task_manager/presentation/widgets/center_circular_progress_indicator.dart';
 
 import '../../utils/snackbar.dart';
 import '../../widgets/task_card.dart';
@@ -29,16 +30,20 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16.0),
         child: GetBuilder<CancelledTaskListController>(
           builder: (controller) {
-            return ListView.separated(
-              itemBuilder: (BuildContext context, index)=>TaskCard(
-                textTheme: textTheme,
-                taskList: controller.cancelledTaskList[index],
-                onRefreshList: () {
-                  _getCancelledTaskList();
-                },),
-              separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
-              itemCount: controller.cancelledTaskList.length
-                  );
+            return Visibility(
+              visible: !controller.inProgress,
+              replacement: const CenterCircularProgressIndicator(),
+              child: ListView.separated(
+                itemBuilder: (BuildContext context, index)=>TaskCard(
+                  textTheme: textTheme,
+                  taskList: controller.cancelledTaskList[index],
+                  onRefreshList: () {
+                    _getCancelledTaskList();
+                  },),
+                separatorBuilder: (BuildContext context, index)=>const SizedBox(height: 12,),
+                itemCount: controller.cancelledTaskList.length
+                    ),
+            );
           }
         ),
     ),
