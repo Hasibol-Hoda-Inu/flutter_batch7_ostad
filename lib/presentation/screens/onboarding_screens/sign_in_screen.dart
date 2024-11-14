@@ -167,9 +167,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
   void _onTabForgetPassword(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const EmailVerificationScreen()));
+    Navigator.pushNamed(context, EmailVerificationScreen.name);
   }
   void _onTabSignUpScreen(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpScreen()));
+    Navigator.pushNamed(context, SignUpScreen.name);
   }
 }

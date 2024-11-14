@@ -29,10 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
    if(AuthController.isLoggedIn()){
      await AuthController.getUserData();
      Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
-     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const MainBottomNavScreen()));
    }else{
      Navigator.pushReplacementNamed(context, LoginScreen.name);
-     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
    }
   }
 

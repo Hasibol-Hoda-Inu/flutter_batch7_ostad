@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_manager/presentation/screens/onboarding_screens/email_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/pin_verification_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_in_screen.dart';
 import 'package:task_manager/presentation/screens/onboarding_screens/sign_up_screen.dart';
@@ -29,6 +30,7 @@ class TaskManager extends StatelessWidget {
         PinVerificationScreen.name : (context)=> const PinVerificationScreen(),
         ResetPasswordScreen.name : (context)=> const ResetPasswordScreen(),
         AddNewTaskScreen.name : (context)=> const AddNewTaskScreen(),
+        EmailVerificationScreen.name : (context)=> const EmailVerificationScreen(),
       },
 
       theme: ThemeData(

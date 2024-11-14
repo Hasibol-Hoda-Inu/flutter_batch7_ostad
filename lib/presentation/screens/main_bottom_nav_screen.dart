@@ -18,7 +18,7 @@ class MainBottomNavScreen extends StatefulWidget {
 }
 
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
-  // int _selectedIndex = 0;
+
   final MainBottomNavController mBNController = Get.find<MainBottomNavController>();
 
   final List<Widget> _screens = [

@@ -11,6 +11,7 @@ import 'pin_verification_screen.dart';
 import 'sign_in_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
+  static const String name = "/emailVerificationScreen";
   const EmailVerificationScreen({super.key});
 
   @override
@@ -72,8 +73,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             keyboardType: TextInputType.emailAddress,
           ),
         ),
-              const SizedBox(height: 20,),
-              SizedBox(
+        const SizedBox(height: 20,),
+        SizedBox(
                 width: double.infinity,
                 child: GetBuilder<RecoverVerifyEmailController>(
                   builder: (controller) {
@@ -90,8 +91,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   }
                 ),
               ),
-              const SizedBox(height: 60,),
-            ],
+        const SizedBox(height: 60,),
+      ],
     );
   }
 

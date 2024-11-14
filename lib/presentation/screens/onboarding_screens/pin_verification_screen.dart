@@ -155,8 +155,8 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       )),
     );
   }
+
   void _onTapNextScreen(){
     Navigator.pushNamed(context, LoginScreen.name);
   }
-
 }
