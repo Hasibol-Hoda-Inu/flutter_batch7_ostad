@@ -13,10 +13,10 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController _nameTEController = TextEditingController();
-  TextEditingController _emailTEController = TextEditingController();
-  TextEditingController _passwordTEController = TextEditingController();
-
+  final TextEditingController _nameTEController = TextEditingController();
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _auth = AuthService();
 
   @override
@@ -32,13 +32,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 "Sign up",
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
               ),
+              const SizedBox(height: 36,),
               Form(
+                key: _formKey,
                   child: Column(
                     children: [
                       TextFormField(
-                    controller: _nameTEController,
-                    decoration: const InputDecoration(
-                      hintText: "Name",
+                        controller: _nameTEController,
+                        decoration: const InputDecoration(
+                            hintText: "your name",
+                            label: Text("Name")
                     ),
                   ),
                       const SizedBox(
@@ -47,32 +50,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       TextFormField(
                         controller: _emailTEController,
                         decoration: const InputDecoration(
-                          hintText: "Email",
+                          hintText: "yourmail@gmail.com",
+                          label: Text("Email")
                     ),
                   ),
-                  const SizedBox(
+                      const SizedBox(
                     height: 12,
                   ),
-                  TextFormField(
-                    controller: _passwordTEController,
-                    decoration: const InputDecoration(hintText: "Password"),
+                      TextFormField(
+                        controller: _passwordTEController,
+                        validator: (value)=>value!.length<8?"Password must be 8 characters long":null,
+                        decoration: const InputDecoration(
+                            hintText: "your password",
+                            label: Text("Password"),
+                        ),
                   ),
                 ],
               )),
-              const SizedBox(
-                height: 24,
-              ),
+              const SizedBox(height: 24,),
               ElevatedButton(
                   onPressed: () {
-                    onTapSignUpMethod();
+                    onTapNextScreen();
                   },
-                  child: const Text(
-                    "Sign up",
-                    style: TextStyle(fontSize: 18),
-                  )),
-              const SizedBox(
-                height: 32,
+                  child: const Text("Sign up", style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                  ),
               ),
+              const SizedBox(height: 32,),
               RichText(
                   text: TextSpan(
                       text: "Already have an account? ",
@@ -92,6 +98,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void onTapNextScreen(){
+    if(!_formKey.currentState!.validate()){
+      return;
+    }
+    onTapSignUpMethod();
   }
 
   void onTapSignUpMethod() async {
@@ -125,7 +138,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _onTapLoginScreen() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 }

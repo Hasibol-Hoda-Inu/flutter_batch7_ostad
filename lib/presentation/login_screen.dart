@@ -3,6 +3,7 @@ import 'package:firebase_practice/presentation/home_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'assets/app_color.dart';
 import 'sign_up_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,7 +16,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailTEController = TextEditingController();
   TextEditingController _passwordTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _auth = AuthService();
+  bool _inProgressLogin = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,30 +33,46 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontSize: 32,
                   fontWeight: FontWeight.w600
               ),),
+              const SizedBox(height: 36,),
               Form(
+                key: _formKey,
                   child: Column(
                     children: [
                       TextFormField(
                         controller: _emailTEController,
                         decoration: const InputDecoration(
-                          hintText: "Email",
-
+                          hintText: "yourmail@gmail.com",
+                          label: Text("Email"),
                         ),
                       ),
+                      const SizedBox(height: 16,),
                       TextFormField(
                         controller: _passwordTEController,
+                        obscureText: true,
+                        validator: (value)=> value!= null && value.length < 8? "Password must contain 8 characters min": null,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
-                            hintText: "Password"
+                            hintText: "your password",
+                          label: Text("Password")
                         ),
                       ),
                     ],
                   )),
               const SizedBox(height: 24,),
-              ElevatedButton(
-                  onPressed: (){
-                    onTapSignUpMethod();
-                  },
-                  child: const Text("Login", style: TextStyle(fontSize: 18),)),
+              Visibility(
+                visible: !_inProgressLogin,
+                replacement: const Center(child: CircularProgressIndicator(),),
+                child: ElevatedButton(
+                    onPressed: (){
+                      onTapNextScreen();
+                    },
+                    style: ElevatedButton.styleFrom(),
+                    child: const Text("Login", style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    )),
+              ),
               const SizedBox(height: 32,),
               RichText(text: TextSpan(
                   text: "Don't have an account? ", style: const TextStyle(
@@ -75,24 +95,34 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void onTapSignUpMethod() async {
+  void onTapNextScreen(){
+    if(!_formKey.currentState!.validate()){
+      return;
+    }
+    onTapLoginMethod();
+  }
+
+  void onTapLoginMethod() async {
+    _inProgressLogin = true;
+    setState(() {});
     final user = await _auth.loginWithEmailAndPassword(
         _emailTEController.text.trim(), _passwordTEController.text);
     if (user != null) {
+      _inProgressLogin = false;
+      setState(() {});
       debugPrint("Successfully logged in");
-      ScaffoldMessenger.of(context).showSnackBar(const
-      SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Login successful", style: TextStyle(color: Colors.white),),
-        backgroundColor: Colors.purpleAccent,
+        backgroundColor: AppColor.primaryColor,
       ),
       );
       clearText();
-      _onTapSignUpScreen();
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const HomeScreen()), (predicate)=>false);
     }
   }
 
   void _onTapSignUpScreen(){
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const HomeScreen()), (predicate)=>false);
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpScreen()));
   }
 
   void clearText(){
