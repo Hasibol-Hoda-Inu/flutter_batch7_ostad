@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../auth/auth_service.dart';
-import 'home_screen.dart';
 import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {

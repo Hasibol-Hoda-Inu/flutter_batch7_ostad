@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _auth = AuthService();
   bool _inProgressLogin = false;
+  bool _inProgressGoogleLogin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +78,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     )),
               ),
+              const SizedBox(height: 16,),
+              _inProgressGoogleLogin?const Center(child: CircularProgressIndicator(),) : ElevatedButton(
+                onPressed: (){
+                  onTapGoogleLoginMethod();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("assets/images/google.png", width: 24,height: 24,),
+                    const SizedBox(width: 10,),
+                    const Text("Sign in with Google", style: TextStyle(fontSize: 18),)
+                  ],
+                ),
+              ),
               const SizedBox(height: 32,),
               RichText(text: TextSpan(
                   text: "Don't have an account? ", style: const TextStyle(
@@ -104,6 +122,39 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     onTapLoginMethod();
+  }
+
+  Future<void> onTapGoogleLoginMethod() async {
+    _inProgressGoogleLogin = true;
+    setState(() {});
+    try{
+      final user = await _auth.loginWithGoogle();
+      if(user!=null){
+        _inProgressGoogleLogin = false;
+        setState(() {});
+        debugPrint("Successfully logged in");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Login successful", style: TextStyle(color: Colors.white),),
+          backgroundColor: AppColor.primaryColor,
+        ),);
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const HomeScreen()), (predicate)=>false);
+      }else{
+        _inProgressGoogleLogin = false;
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Login successful", style: TextStyle(color: Colors.white),),
+          backgroundColor: Colors.red,
+        ),);
+      }
+    }catch(e){
+      _inProgressGoogleLogin = false;
+      setState(() {});
+      debugPrint("Error during Google Sign-In: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Login failed: $e"),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   void onTapLoginMethod() async {
