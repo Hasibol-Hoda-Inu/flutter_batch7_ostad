@@ -1,7 +1,8 @@
 import 'package:firebase_practice/presentation/login_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../presentation/assets/app_color.dart';
+import '../presentation/utils/app_color.dart';
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

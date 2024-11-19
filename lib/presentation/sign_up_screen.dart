@@ -1,3 +1,4 @@
+import 'package:firebase_practice/presentation/utils/email_validation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _auth = AuthService();
-
+  bool _inProgressSignUp = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +50,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                       TextFormField(
                         controller: _emailTEController,
+                        validator: (value)=>value!.isValidEmail()?null:"Enter a valid email",
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           hintText: "yourmail@gmail.com",
                           label: Text("Email")
@@ -60,6 +64,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       TextFormField(
                         controller: _passwordTEController,
                         validator: (value)=>value!.length<8?"Password must be 8 characters long":null,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        obscureText: true,
                         decoration: const InputDecoration(
                             hintText: "your password",
                             label: Text("Password"),
@@ -68,15 +74,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ],
               )),
               const SizedBox(height: 24,),
-              ElevatedButton(
-                  onPressed: () {
-                    onTapNextScreen();
-                  },
-                  child: const Text("Sign up", style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                  ),
+              Visibility(
+                visible: !_inProgressSignUp,
+                replacement: const Center(child: CircularProgressIndicator(),),
+                child: ElevatedButton(
+                    onPressed: () {
+                      onTapNextScreen();
+                    },
+                    child: const Text("Sign up", style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                    ),
+                ),
               ),
               const SizedBox(height: 32,),
               RichText(
@@ -108,9 +118,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void onTapSignUpMethod() async {
+    _inProgressSignUp = true;
+    setState(() {});
     final user = await _auth.signUpWithEmailAndPassword(
         _emailTEController.text.trim(), _passwordTEController.text);
     if (user != null) {
+      _inProgressSignUp = false;
+      setState(() {});
       debugPrint("User created successfully");
       ScaffoldMessenger.of(context).showSnackBar(const
       SnackBar(

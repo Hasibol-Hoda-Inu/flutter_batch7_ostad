@@ -1,10 +1,11 @@
 import 'package:firebase_practice/auth/auth_service.dart';
 import 'package:firebase_practice/presentation/home_screen.dart';
+import 'package:firebase_practice/presentation/utils/email_validation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'assets/app_color.dart';
 import 'sign_up_screen.dart';
+import 'utils/app_color.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,6 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       TextFormField(
                         controller: _emailTEController,
+                        validator: (value)=>value!.isValidEmail()?null:"Enter a valid email",
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           hintText: "yourmail@gmail.com",
                           label: Text("Email"),
