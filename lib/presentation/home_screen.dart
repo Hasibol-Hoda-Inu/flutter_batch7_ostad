@@ -10,21 +10,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
   final _auth = AuthService();
-
+  bool isLive = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("HomeScreen"),
+        title: Row(
+          children: [
+            const Text("Live Score"),
+            const SizedBox(width: 5,),
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isLive? Colors.red : Colors.grey,
+              ),
+            )
+          ],
+        ),
         actions: [
           IconButton(onPressed: (){
             _auth.signOut();
@@ -33,24 +39,32 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.logout_rounded))
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Text("TeamOne", style: TextStyle(fontSize: 22),),
+                    Text("score", style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                const SizedBox(width: 14,),
+                Text("vs", style: TextStyle(fontSize: 22),),
+                const SizedBox(width: 14,),
+                Column(
+                  children: [
+                    Text("TeamTwo", style: TextStyle(fontSize: 22),),
+                    Text("score", style: TextStyle(fontSize: 18),)
+                  ],
+                )
+              ],
+            )
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
