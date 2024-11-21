@@ -1,6 +1,9 @@
-import 'package:firebase_practice/auth/auth_service.dart';
-import 'package:firebase_practice/presentation/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../auth/auth_service.dart';
+import 'cricket_match.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key,});
@@ -12,6 +15,26 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = AuthService();
   bool isLive = false;
+
+  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+  List<CricketMatch>_cricketMatchList = [];
+
+  Future<void>_getScoreData()async {
+    _cricketMatchList.clear();
+    setState(() {});
+    final QuerySnapshot snapshot = await _firebaseFirestore.collection("Cricket").get();
+      for(DocumentSnapshot doc in snapshot.docs){
+        _cricketMatchList.add(CricketMatch.fromJson(doc.data() as Map<String, dynamic>));
+      }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getScoreData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,14 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text("Live Score"),
             const SizedBox(width: 5,),
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isLive? Colors.red : Colors.grey,
-              ),
-            )
+            Badge(backgroundColor: _cricketMatchList[0].isMatchRunning?Colors.red:Colors.grey,)
           ],
         ),
         actions: [
@@ -39,32 +55,22 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.logout_rounded))
         ],
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Text("TeamOne", style: TextStyle(fontSize: 22),),
-                    Text("score", style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                const SizedBox(width: 14,),
-                Text("vs", style: TextStyle(fontSize: 22),),
-                const SizedBox(width: 14,),
-                Column(
-                  children: [
-                    Text("TeamTwo", style: TextStyle(fontSize: 22),),
-                    Text("score", style: TextStyle(fontSize: 18),)
-                  ],
-                )
-              ],
-            )
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+                itemCount: _cricketMatchList.length,
+                itemBuilder: (BuildContext context, index){
+                  CricketMatch cricketMatch = _cricketMatchList[0];
+                  return ListTile(
+                    leading: Badge(backgroundColor: cricketMatch.isMatchRunning? Colors.red:Colors.grey,),
+                    title: Text("${cricketMatch.TeamOne} vs ${cricketMatch.TeamTwo}"),
+                    subtitle: Text("${cricketMatch.TeamOneScore} vs ${cricketMatch.TeamTwoScore}"),
+                  );
+                }),
+          ),
+          Text(_cricketMatchList[0].TeamTwo),
+        ],
       ),
     );
   }
