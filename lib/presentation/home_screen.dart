@@ -30,11 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Row(
+        title: const Row(
           children: [
-            const Text("Live Score"),
-            const SizedBox(width: 5,),
-            Badge(backgroundColor: _cricketMatchList[0].isMatchRunning?Colors.red:Colors.grey,)
+            Text("Live Score"),
+            SizedBox(width: 5,),
+            // Badge(backgroundColor: _cricketMatchList[0].isMatchRunning?Colors.red:Colors.grey,)
           ],
         ),
         actions: [
@@ -79,6 +79,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           // Text(_cricketMatchList[0].TeamTwo),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+          CricketMatch cricketMatch = CricketMatch(
+              TeamOne: "India",
+              TeamTwo: "Pakistan",
+              TeamOneScore: 228,
+              TeamTwoScore: 320,
+              WinnerTeam: "Pakistan",
+              isMatchRunning: true,
+          );
+          firebaseFirestore
+              .collection("Cricket")
+              .doc("Pak vs Ind")
+              .set(cricketMatch.toJon())
+              .onError((e, _) => debugPrint("Error writing document: $e"));
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
