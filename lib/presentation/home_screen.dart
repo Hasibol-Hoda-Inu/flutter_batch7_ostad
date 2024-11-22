@@ -16,25 +16,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final _auth = AuthService();
   bool isLive = false;
 
-  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final List<CricketMatch>_cricketMatchList = [];
 
-  List<CricketMatch>_cricketMatchList = [];
-
-  Future<void>_getScoreData()async {
+  void _extractData(QuerySnapshot<Map<String, dynamic>>?snapshot){
     _cricketMatchList.clear();
-    setState(() {});
-    final QuerySnapshot snapshot = await _firebaseFirestore.collection("Cricket").get();
-      for(DocumentSnapshot doc in snapshot.docs){
-        _cricketMatchList.add(CricketMatch.fromJson(doc.data() as Map<String, dynamic>));
-      }
-    setState(() {});
+    for(DocumentSnapshot doc in snapshot?.docs??[]){
+      _cricketMatchList.add(CricketMatch.fromJson(doc.data() as Map<String, dynamic>));
+    }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getScoreData();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,18 +48,36 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-                itemCount: _cricketMatchList.length,
-                itemBuilder: (BuildContext context, index){
-                  CricketMatch cricketMatch = _cricketMatchList[0];
-                  return ListTile(
-                    leading: Badge(backgroundColor: cricketMatch.isMatchRunning? Colors.red:Colors.grey,),
-                    title: Text("${cricketMatch.TeamOne} vs ${cricketMatch.TeamTwo}"),
-                    subtitle: Text("${cricketMatch.TeamOneScore} vs ${cricketMatch.TeamTwoScore}"),
-                  );
-                }),
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection("Cricket").snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(child: CircularProgressIndicator(),);
+                }
+                if(snapshot.hasError){
+                  return Center(child: Text(snapshot.error.toString()),);
+                }
+                if(snapshot.hasData) {
+                  _extractData(snapshot.data);
+                  return ListView.builder(
+                      itemCount: _cricketMatchList.length,
+                      itemBuilder: (BuildContext context, index) {
+                        CricketMatch cricketMatch = _cricketMatchList[index];
+                        return ListTile(
+                          leading: Badge(backgroundColor: cricketMatch
+                              .isMatchRunning ? Colors.red : Colors.grey,),
+                          title: Text("${cricketMatch.TeamOne} vs ${cricketMatch
+                              .TeamTwo}"),
+                          subtitle: Text("${cricketMatch
+                              .TeamOneScore} vs ${cricketMatch.TeamTwoScore}"),
+                        );
+                      });
+                }
+                return const SizedBox();
+              }
+            ),
           ),
-          Text(_cricketMatchList[0].TeamTwo),
+          // Text(_cricketMatchList[0].TeamTwo),
         ],
       ),
     );

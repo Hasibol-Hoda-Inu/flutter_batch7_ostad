@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _inProgressGoogleLogin = false;
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Login successful", style: TextStyle(color: Colors.white),),
+          content: Text("Login failed", style: TextStyle(color: Colors.white),),
           backgroundColor: Colors.red,
         ),);
       }
