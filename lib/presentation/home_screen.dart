@@ -78,15 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             ),
           ),
-          const Text("where i'm"),
-          ElevatedButton(
-              onPressed: (){
-                LocalNotification.showInstanceNotification(
-                    "This is the title",
-                    "i'm the body",
-                );
-                },
-              child: const Text("data"))
           // Text(_cricketMatchList[0].TeamTwo),
         ],
       ),

@@ -51,7 +51,7 @@ class LocalNotification{
         platformChannelSpecifics,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         androidScheduleMode: AndroidScheduleMode.exact,
-      matchDateTimeComponents: DateTimeComponents.dateAndTime
+        matchDateTimeComponents: DateTimeComponents.dateAndTime
     );
   }
 }
