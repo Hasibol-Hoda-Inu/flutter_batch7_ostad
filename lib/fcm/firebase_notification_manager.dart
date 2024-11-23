@@ -8,7 +8,11 @@ class FirebaseNotificationManager{
     FirebaseMessaging.onMessageOpenedApp.listen(_message);
     FirebaseMessaging.onBackgroundMessage(_onBackGroundMessage);
 }
-  static void _message(RemoteMessage message){}
+  static void _message(RemoteMessage message){
+    print(message.data);
+    print(message.notification?.title);
+    print(message.notification?.body);
+  }
 }
 
 Future<void> _onBackGroundMessage(RemoteMessage message)async {

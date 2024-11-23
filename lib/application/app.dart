@@ -1,3 +1,4 @@
+import 'package:firebase_practice/auth/wrapper.dart';
 import 'package:firebase_practice/presentation/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: const LoginScreen(),
+      home: const Wrapper(),
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: AppColor.primaryColor,

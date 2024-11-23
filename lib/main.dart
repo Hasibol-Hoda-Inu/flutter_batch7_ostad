@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_practice/fcm/firebase_notification_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'application/app.dart';
@@ -9,6 +10,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseNotificationManager.initialize();
   runApp(const MyApp());
 }
 
