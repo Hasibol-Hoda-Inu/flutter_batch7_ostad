@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_practice/fcm/local_notification.dart';
 
 class FirebaseNotificationManager{
   static Future<void> initialize()async {
@@ -12,6 +13,7 @@ class FirebaseNotificationManager{
     print(message.data);
     print(message.notification?.title);
     print(message.notification?.body);
+    LocalNotification.showInstanceNotification(message.notification?.title??"This is title", message.notification?.body??"This is body");
   }
   static Future<String?>getFcmToken() async {
     String? token = await FirebaseMessaging.instance.getToken();

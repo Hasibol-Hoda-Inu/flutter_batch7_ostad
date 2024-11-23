@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_practice/fcm/local_notification.dart';
 import 'package:flutter/material.dart';
 
 import '../auth/auth_service.dart';
@@ -77,6 +78,15 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             ),
           ),
+          const Text("where i'm"),
+          ElevatedButton(
+              onPressed: (){
+                LocalNotification.showInstanceNotification(
+                    "This is the title",
+                    "i'm the body",
+                );
+                },
+              child: const Text("data"))
           // Text(_cricketMatchList[0].TeamTwo),
         ],
       ),
@@ -84,12 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: (){
           FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
           CricketMatch cricketMatch = CricketMatch(
-              TeamOne: "India",
-              TeamTwo: "Pakistan",
-              TeamOneScore: 228,
-              TeamTwoScore: 320,
-              WinnerTeam: "Pakistan",
-              isMatchRunning: true,
+            TeamOne: "India",
+            TeamTwo: "Pakistan",
+            TeamOneScore: 228,
+            TeamTwoScore: 320,
+            WinnerTeam: "Pakistan",
+            isMatchRunning: true,
           );
           firebaseFirestore
               .collection("Cricket")
