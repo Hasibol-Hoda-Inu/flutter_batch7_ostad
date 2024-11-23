@@ -11,6 +11,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseNotificationManager.initialize();
+  debugPrint("Token:");
+  debugPrint(await FirebaseNotificationManager.getFcmToken());
+  await FirebaseNotificationManager().subscribeToTopic("ostad");
   runApp(const MyApp());
 }
 

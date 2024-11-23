@@ -13,6 +13,20 @@ class FirebaseNotificationManager{
     print(message.notification?.title);
     print(message.notification?.body);
   }
+  static Future<String?>getFcmToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    return token;
+  }
+  static Future<void>onRefreshFcmToken() async {
+    FirebaseMessaging.instance.onTokenRefresh.listen((String? newToken){});
+  }
+
+  Future<void>subscribeToTopic(String topicName)async {
+    await FirebaseMessaging.instance.subscribeToTopic(topicName);
+  }
+  Future<void>unSubscribeToTopic(String topicName)async {
+    await FirebaseMessaging.instance.unsubscribeFromTopic(topicName);
+  }
 }
 
 Future<void> _onBackGroundMessage(RemoteMessage message)async {
