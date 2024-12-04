@@ -13,6 +13,36 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
 
   Position? userLocation;
 
+  @override
+  void initState() {
+    super.initState();
+    listenCurrentLocation();
+  }
+  Future<void> listenCurrentLocation() async {
+    final isGranted = await isLocationPermissionGranted();
+    if(isGranted){
+      final isServiceEnabled = await checkGPSServiceEnable();
+      if(isServiceEnabled){
+        Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            timeLimit: Duration(seconds: 3),
+            accuracy: LocationAccuracy.best
+          )
+        ).listen((pos)=>print(pos));
+        // print(position);
+        // userLocation = position;
+        // setState(() {});
+      }else{
+        Geolocator.openLocationSettings();
+      }
+    }else{
+      final result = await requestLocationPermission();
+      if(result){
+        getCurrentLocation();
+      }Geolocator.openAppSettings();
+
+    }
+  }
   Future<void>getCurrentLocation()async {
     final isGranted = await isLocationPermissionGranted();
     if(isGranted){
