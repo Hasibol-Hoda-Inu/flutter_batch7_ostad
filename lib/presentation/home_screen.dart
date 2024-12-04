@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    required this.Lat,
+    required this.Lng
+  });
+
+  final double Lat;
+  final double Lng;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -13,10 +20,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Map"),
+      ),
       body: SafeArea(
         child: GoogleMap(
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(25.282623959000336, 89.01496503289209,),
+          initialCameraPosition: CameraPosition(
+            target: LatLng(widget.Lat, widget.Lng,),
             zoom: 16,
         ),
           onMapCreated: (GoogleMapController controller){
