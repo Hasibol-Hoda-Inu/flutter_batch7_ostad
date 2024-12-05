@@ -25,11 +25,11 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
       if(isServiceEnabled){
         Geolocator.getPositionStream(
           locationSettings: const LocationSettings(
-            timeLimit: Duration(seconds: 3),
+            timeLimit: Duration(seconds: 10),
             accuracy: LocationAccuracy.best
           )
         ).listen((pos)=>print(pos));
-        // print(position);
+        // print(pos);
         // userLocation = position;
         // setState(() {});
       }else{
@@ -43,6 +43,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
 
     }
   }
+
   Future<void>getCurrentLocation()async {
     final isGranted = await isLocationPermissionGranted();
     if(isGranted){
@@ -109,8 +110,8 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (BuildContext context)=>
                           HomeScreen(
-                            Lat: userLocation!.latitude,
-                            Lng: userLocation!.longitude,
+                            // Lat: userLocation!.latitude,
+                            // Lng: userLocation!.longitude,
                           )));
                 },
                 child: const Text("Check map")),
