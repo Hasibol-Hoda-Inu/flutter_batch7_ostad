@@ -5,3 +5,4 @@ A new Flutter project.
 ## Getting Started
 
 Google map practice project
+![assignment ss](assets/images/map.jpg)
