@@ -57,7 +57,8 @@ class DatabaseHelper {
     final db = await instance.database;
     return await db.delete(
         'tasks',
-        where: 'id = ?'
+        where: 'id = ?',
+        whereArgs: [id]
     );
   }
 }
