@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _taskController = TextEditingController();
   List<TaskDataModel> _tasks = [];
+
   @override
   void initState() {
     super.initState();
@@ -37,12 +38,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: TextField(
                     controller: _taskController,
                     decoration: InputDecoration(
-                      hintText: 'Enter task'
+                        hintText: 'Enter task'
                     ),
                   ),
                 ),
                 IconButton.filled(
-                    onPressed: (){},
+                    onPressed: () {
+                      _addTask();
+                    },
                     icon: Icon(Icons.add)
                 )
               ],
@@ -50,23 +53,33 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index)=> ListTile(
-                  leading: Text('$index'),
-                  title: Text('Task $index'),
-                  trailing: Wrap(
-                    children: [
-                      IconButton(
-                          onPressed: (){},
-                          icon: Icon(Icons.check_box_outline_blank)
+                itemCount: _tasks.length,
+                itemBuilder: (context, index) =>
+                    ListTile(
+                      leading: CircleAvatar(child: Text('${index + 1}')),
+                      title: Text(_tasks[index].title),
+                      trailing: Wrap(
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                _toggleTask(
+                                  _tasks[index].id!,
+                                  _tasks[index].isCompleted == 0 ? 1 : 0
+                                );
+                              },
+                              icon: _tasks.toList()[index].isCompleted == 0
+                                  ? Icon(Icons.check_box_outline_blank)
+                                  : Icon(Icons.check_box)
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                 _deleteTask(_tasks[index].id!);
+                              },
+                              icon: Icon(Icons.delete)
+                          ),
+                        ],
                       ),
-                      IconButton(
-                          onPressed: (){},
-                          icon: Icon(Icons.delete)
-                      ),
-                    ],
-                  ),
-                )
+                    )
             ),
           ),
         ],
@@ -80,4 +93,25 @@ class _HomeScreenState extends State<HomeScreen> {
       _tasks = tasks.map((task) => TaskDataModel.fromMap(task)).toList();
     });
   }
+
+  Future<void> _addTask() async {
+    final taskTitle = _taskController.text;
+    if (taskTitle.isNotEmpty) {
+      final task = TaskDataModel(title: taskTitle);
+      await DatabaseHelper.instance.insertTask(task.toMap());
+      _taskController.clear();
+      _loadTasks();
+    }
+  }
+
+  Future<void> _toggleTask(int id, int isCompleted) async {
+    await DatabaseHelper.instance.updateTask(id, isCompleted);
+    _loadTasks();
+  }
+
+  Future<void> _deleteTask(int id) async {
+    await DatabaseHelper.instance.deleteTask(id);
+    _loadTasks();
+  }
+
 }
